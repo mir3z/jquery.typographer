@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../lib/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="../src/jquery.typographer.js"></script>
+    <script type="text/javascript" src="../src/jquery.typographer.punctuation.js"></script>
+    <title></title>
+
+    <style type="text/css">
+        #wrapper {
+            text-align: center;
+        }
+        div.col {
+            width: 400px;
+            text-align: justify;
+            margin: 0 15px 15px;
+            display: inline-block;
+            color: #333;
+            vertical-align: top;
+            font-size: 10pt !important;
+            font-family: serif !important;
+            line-height: 1.3em;
+        }
+        .letters-loosely {
+            text-align: left !important;
+            letter-spacing: 10px;
+        }
+        .left {
+            border: 2px solid red;
+        }
+        .right {
+            border: 2px solid green;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+
+      <h1>Korekta cudzysłowów</h1>
+      <div class="left col">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at quam nisl. Pellentesque
+        lorem diam, aliquet non fringilla id, aliquam ac nisl. Curabitur "eget nisi vel" mauris
+        sollicitudin varius. Pellentesque vel felis risus. Aliquam "feugiat" dui ut massa fermentum
+        blandit. Quisque eget enim ipsum, sit amet interdum lorem. Duis "pulvinar velit sit" amet elit
+        facilisis fermentum.
+      </div>
+
+      <div class="right col correct-me">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at quam nisl. Pellentesque
+        lorem diam, aliquet non fringilla id, aliquam ac nisl. Curabitur "eget nisi vel" mauris
+        sollicitudin varius. Pellentesque vel felis risus. Aliquam "feugiat" dui ut massa fermentum
+        blandit. Quisque eget enim ipsum, sit amet interdum lorem. Duis "pulvinar velit sit" amet elit
+        facilisis fermentum.
+      </div>
+
+      <h1>Korekta wielokropka</h1>
+      <div class="left col">
+        Dawno, dawno temu...
+      </div>
+      <div class="right col correct-me">
+        Dawno, dawno temu...
+      </div>
+
+      <div class="left col letters-loosely">
+        Dawno, dawno temu...
+      </div>
+      <div class="right col letters-loosely correct-me">
+        Dawno, dawno temu...
+      </div>
+
+      <h1>Korekta apostrofu</h1>
+      <div class="left col">
+        Alfabet Morse'a
+      </div>
+      <div class="right col correct-me">
+        Alfabet Morse'a
+      </div>
+
+      <h1>Korekta myślnika</h1>
+      <div class="left col">
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24. <br/>
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.<br/>
+        biało-czerowona.<br/>
+        29-krotny.<br/>
+        w latach 1989 - 2001<br/>
+        dwu-, trzy- lub czteroliterowy
+      </div>
+      <div class="right col correct-me">
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24. <br/>
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.<br/>
+        biało-czerowona.<br/>
+        29-krotny.<br/>
+        w latach 1989 - 2001</br>
+        dwu-, trzy- lub czteroliterowy
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $('.correct-me').typographer({
+              modules: ['punctuation']
+          });
+      });
+    </script>
+  </body>
+</html>
