@@ -77,8 +77,6 @@
         var args = arguments;
 
         return $(this).each(function() {
-            console.log(this);
-
             if (methods[method]) {
                 return methods[method].apply(this, Array.prototype.slice.call(args, 1));
             } else if (typeof method === 'object' || !method) {

@@ -27,20 +27,33 @@
     var methods = {
         init: function(opts) {
             console.log('typographer.orphan.init()');
-            context = $(this).get(0);
+            context = context || $(this).get(0);
             options = $.extend({}, $.fn.typographer.orphan.defaults, opts);
 
             $(context).addClass(options.contextClass);
+
+            compileRegex();
             execute();
         }
     };
+    var deorphanizeRegex;
     var nbsp = '&nbsp;';
+
+    function compileRegex() {
+        var forbiddenAlt = $.fn.typographer.orphan.defaults.forbidden.join('|');
+        var pattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
+        deorphanizeRegex = new RegExp(pattern, 'gi');
+    }
 
     function execute() {
         console.log("typographer.orphan.execute()");
 
-        context.innerHTML = context.innerHTML.replace(/([aiouwz])(?:\n|\s)+/gi, '$1' + nbsp);
+        context.innerHTML = $.fn.typographer.orphan.deorphanize(context.innerHTML);
     }
+
+    $.fn.typographer = $.fn.typographer || function() {
+        context = $(this).get(0);
+    };
 
     $.fn.typographer.orphan = function(method) {
         var args = arguments;
@@ -56,8 +69,19 @@
         });
     };
 
+    $.fn.typographer.orphan.deorphanize = function(text) {
+        return text.replace(deorphanizeRegex, function($0, $1, pos) {
+            var preMatchChar = text.substring(pos - 1, pos);
+            if (preMatchChar != ' ' && preMatchChar != '') {
+                return $0;
+            } else {
+                return $1 + nbsp;
+            }
+        });
+    }
+
     $.fn.typographer.orphan.defaults = {
         contextClass: 'jquery-typographer-orphan',
+        forbidden: ['a', 'i', 'o', 'u', 'w', 'z']
     };
-
 })(jQuery);
