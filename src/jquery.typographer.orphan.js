@@ -36,11 +36,11 @@
             execute();
         }
     };
-    var deorphanizeRegex;
+    var deorphanizeRegex = null;
     var nbsp = '&nbsp;';
 
     function compileRegex() {
-        var forbiddenAlt = $.fn.typographer.orphan.defaults.forbidden.join('|');
+        var forbiddenAlt = options.forbidden.join('|');
         var pattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
         deorphanizeRegex = new RegExp(pattern, 'gi');
     }
@@ -53,6 +53,7 @@
 
     $.fn.typographer = $.fn.typographer || function() {
         context = $(this).get(0);
+        return $.fn.typographer;
     };
 
     $.fn.typographer.orphan = function(method) {
@@ -70,6 +71,11 @@
     };
 
     $.fn.typographer.orphan.deorphanize = function(text) {
+        if (!deorphanizeRegex) {
+            compileRegex();
+        }
+        options = $.extend({}, $.fn.typographer.orphan.defaults);
+
         return text.replace(deorphanizeRegex, function($0, $1, pos) {
             var preMatchChar = text.substring(pos - 1, pos);
             if (preMatchChar != ' ' && preMatchChar != '') {

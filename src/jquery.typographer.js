@@ -63,7 +63,7 @@
         for(var prop in $.fn.typographer) {
             if (shouldRunModule(prop)) {
                 console.log('typographer.' + prop + ' present');
-                $(context).typographer[prop].apply(context);
+                $(context).typographer[prop].apply(context, [options[prop]]);
             }
         }
     }
