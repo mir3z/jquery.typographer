@@ -158,8 +158,8 @@
                     node = node[char];
                     if (node.hasOwnProperty('$')) {
                         var nodePoints = node['$'];
-
-                        for (var k = 0; k < nodePoints.length; k++) {
+                        for (var k = 0, len = points.length; k < nodePoints.length; k++) {
+                            if (i+k > len - 1) continue;
                             points[i+k] = Math.max(points[i+k], nodePoints[k]);
                         }
                     }

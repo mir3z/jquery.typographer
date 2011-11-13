@@ -58,18 +58,26 @@ $(document).ready(function() {
             init: 'a i o u w z',
             expected: 'a&nbsp;i&nbsp;o&nbsp;u&nbsp;w&nbsp;z'
         },
+        {
+            init: 'A to <b>w domu o</b> świcie',
+            expected: 'A&nbsp;to <b>w&nbsp;domu o</b>&nbsp;świcie'
+        },
+        {
+            init: 'A oto kod: <code>a w domu</code>',
+            expected: 'A&nbsp;oto kod: <code>a w domu</code>'
+        },
     ];
 
     (function runDeorphanizationTests(testSpec) {
         test('Deorphanization', function() {
             $.each(testSpec, function(i, data) {
-                $sandbox.html(data.init);
+                $sandbox.get(0).innerHTML = data.init;
 
                 $sandbox.typographer({
                     modules: ['orphan']
                 });
 
-                equal($sandbox.html(), data.expected, data.init);
+                equal($sandbox.get(0).innerHTML, data.expected, data.init);
             });
         });
     }(testSpec));
@@ -104,7 +112,12 @@ $(document).ready(function() {
     // =========================================================================
 
     module('typographer.hyphen', {
-        teardown: teardown
+        teardown: function() {
+            teardown();
+            $.fn.typographer.hyphen.defaults.minWordLength = 3;
+            $.fn.typographer.hyphen.defaults.minLeft = 2;
+            $.fn.typographer.hyphen.defaults.minRight = 2;
+        }
     });
 
     test('initialization', function() {
@@ -126,21 +139,77 @@ $(document).ready(function() {
         {
             init: 'Wrona gdzieniegdzie kracze i puchają puchacze',
             expected: 'Wro|na gdzie|nie|gdzie kra|cze i pu|cha|ją pu|cha|cze'
+        },
+        {
+            init: 'Wrona <code>gdzieniegdzie kracze</code> i puchają puchacze',
+            expected: 'Wro|na <code>gdzieniegdzie kracze</code> i pu|cha|ją pu|cha|cze'
         }
     ];
 
     (function runHyphenationTests(testSpec) {
         test('Hyphenation', function() {
             $.each(testSpec, function(i, data) {
-                $sandbox.html(data.init);
-                console.log($sandbox);
+                $sandbox.get(0).innerHTML = data.init;
 
                 $sandbox.typographer({
                     modules: ['hyphen']
                 });
                 var expected = data.expected.replace(/\|/g, '\u00AD');
-                equal($sandbox.html(), expected, data.init);
+                equal($sandbox.get(0).innerHTML, expected, data.init);
             });
         });
     }(testSpec));
+
+    test('Public method - splitWord', function() {
+        var init = 'truskawkowa';
+        var expected = ['tru', 'skaw', 'ko', 'wa'];
+
+        ok($.fn.typographer.hyphen.splitWord, 'Method presence');
+        var got = $.fn.typographer.hyphen.splitWord(init);
+
+        deepEqual(got, expected, 'Word splitting');
+    });
+
+    test('Public method - hyphenate', function() {
+        var init = 'truskawkowa symfonia';
+        var expected = 'tru&shy;skaw&shy;ko&shy;wa sym&shy;fo&shy;nia';
+
+        ok($.fn.typographer.hyphen.hyphenate, 'Method presence');
+        var got = $.fn.typographer.hyphen.hyphenate(init);
+
+        deepEqual(got, expected, 'Hyphenation');
+    });
+
+    var minLen = 5;
+    test('Custom options - minLen = ' + minLen, function() {
+        var init = 'mama';
+        var expected = ['mama'];
+
+        $.fn.typographer.hyphen.defaults.minWordLength = minLen;
+
+        var got = $.fn.typographer.hyphen.splitWord(init);
+        deepEqual(got, expected, 'Word splitting');
+    });
+
+    var left = 4;
+    test('Custom options - minLeft = ' + left, function() {
+        var init = 'rabarbar';
+        var expected = ['rabar', 'bar'];
+
+        $.fn.typographer.hyphen.defaults.minLeft = left;
+
+        var got = $.fn.typographer.hyphen.splitWord(init);
+        deepEqual(got, expected, 'Word splitting');
+    });
+
+    var right = 4;
+    test('Custom options - minRight = ' + right, function() {
+        var init = 'rabarbar';
+        var expected = ['ra', 'barbar'];
+
+        $.fn.typographer.hyphen.defaults.minRight = right;
+
+        var got = $.fn.typographer.hyphen.splitWord(init);
+        deepEqual(got, expected, 'Word splitting');
+    });
 });
