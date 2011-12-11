@@ -36,20 +36,84 @@
             execute();
         }
     };
-    var deorphanizeRegex = null;
-    var nbsp = '&nbsp;';
+    var findOrphanRegex = null;
+    var orphanAtTheEndRegex = null;
+    var nbsp = '\u00A0';
 
     function compileRegex() {
         var forbiddenAlt = options.forbidden.join('|');
-        var pattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
-        deorphanizeRegex = new RegExp(pattern, 'gi');
+
+        var findOrphanPattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
+        findOrphanRegex = new RegExp(findOrphanPattern, 'gi');
+
+        var orphanAtTheEndPattern = '\\s+(' + forbiddenAlt + ')$';
+        orphanAtTheEndRegex = new RegExp(orphanAtTheEndPattern, 'i');
     }
 
     function execute() {
         console.log("typographer.orphan.execute()");
 
-        context.innerHTML = $.fn.typographer.orphan.deorphanize(context.innerHTML);
+        var orphanAtTheEnd = false;
+        var textNodes = getTextNodesIn(context, false);
+        $.each(textNodes, function() {
+            if(shouldIgnore(this)) return true;
+
+            var text = this.nodeValue;
+            text = $.fn.typographer.orphan.deorphanize(text);
+
+            if (orphanAtTheEnd == true) {
+                text = text.replace(/^\s+/, nbsp);
+                orphanAtTheEnd = false;
+            }
+
+            if (orphanAtTheEndRegex.test(text)) {
+                orphanAtTheEnd = true;
+            }
+
+            this.nodeValue = text;
+        });
     }
+
+    function getTextNodesIn(node, includeWhitespaceNodes) {
+        var textNodes = [], whitespace = /^\s*$/;
+
+        function getTextNodes(node) {
+            if (node.nodeType == 3) {
+                if (includeWhitespaceNodes || !whitespace.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            } else {
+                for (var i = 0, len = node.childNodes.length; i < len; ++i) {
+                    getTextNodes(node.childNodes[i]);
+                }
+            }
+        }
+
+        getTextNodes(node);
+        return textNodes;
+    }
+
+    function shouldIgnore(node) {
+        var $node = $(node);
+        var lcIgnoreTags = $.map(options.ignoreTags, function(tag) {
+            return tag.toLowerCase();
+        });
+
+        while($node.get(0) != context) {
+            if ($node.get(0).tagName && $.inArray($node.get(0).tagName.toLowerCase(), lcIgnoreTags) > -1) {
+                return true;
+            }
+
+            if ($node.hasClass(options.ignoreClass)) {
+                return true;
+            }
+
+            $node = $node.parent();
+        }
+
+        return false;
+    }
+
 
     $.fn.typographer = $.fn.typographer || function() {
         context = $(this).get(0);
@@ -71,23 +135,28 @@
     };
 
     $.fn.typographer.orphan.deorphanize = function(text) {
-        if (!deorphanizeRegex) {
+        options = $.extend({}, $.fn.typographer.orphan.defaults);
+        if (!findOrphanRegex) {
             compileRegex();
         }
-        options = $.extend({}, $.fn.typographer.orphan.defaults);
 
-        return text.replace(deorphanizeRegex, function($0, $1, pos) {
+        text = text.replace(findOrphanRegex, function($0, $1, pos) {
             var preMatchChar = text.substring(pos - 1, pos);
+
             if (preMatchChar != ' ' && preMatchChar != '') {
                 return $0;
             } else {
                 return $1 + nbsp;
             }
         });
+
+        return text;
     }
 
     $.fn.typographer.orphan.defaults = {
         contextClass: 'jquery-typographer-orphan',
-        forbidden: ['a', 'i', 'o', 'u', 'w', 'z']
+        forbidden: ['a', 'i', 'o', 'u', 'w', 'z'],
+        ignoreTags: ['pre', 'code'],
+        ignoreClass: 'ignore-orphan'
     };
 })(jQuery);

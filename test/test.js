@@ -63,12 +63,16 @@ $(document).ready(function() {
             expected: 'A&nbsp;to <b>w&nbsp;domu o</b>&nbsp;świcie'
         },
         {
+            init: 'A to <b>w domu i</b> o świcie',
+            expected: 'A&nbsp;to <b>w&nbsp;domu i</b>&nbsp;o&nbsp;świcie'
+        },
+        {
             init: 'A oto kod: <code>a w domu</code>',
             expected: 'A&nbsp;oto kod: <code>a w domu</code>'
-        },
+        }
     ];
 
-    (function runDeorphanizationTests(testSpec) {
+    var runDeorphanizationTests = function(testSpec) {
         test('Deorphanization', function() {
             $.each(testSpec, function(i, data) {
                 $sandbox.get(0).innerHTML = data.init;
@@ -80,11 +84,13 @@ $(document).ready(function() {
                 equal($sandbox.get(0).innerHTML, data.expected, data.init);
             });
         });
-    }(testSpec));
+    };
+
+    runDeorphanizationTests(testSpec);
 
     test('Public method - deorphanize', function() {
         var init = 'Być u nieba bram';
-        var expected = 'Być u&nbsp;nieba bram';
+        var expected = 'Być u\u00A0nieba bram';
 
         ok($.fn.typographer.orphan.deorphanize, 'Deorphanize method present');
         var got = $.fn.typographer.orphan.deorphanize(init);
