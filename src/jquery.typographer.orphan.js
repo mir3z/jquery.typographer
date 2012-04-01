@@ -29,6 +29,9 @@
             console.log('typographer.orphan.init()');
             context = context || $(this).get(0);
             options = $.extend({}, $.fn.typographer.orphan.defaults, opts);
+            options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
+                return tagName.toLowerCase();
+            });
 
             $(context).addClass(options.contextClass);
 
@@ -75,11 +78,12 @@
     }
 
     function getTextNodesIn(node, includeWhitespaceNodes) {
-        var textNodes = [], whitespace = /^\s*$/;
+        var textNodes = [], onlyWhitespaces = /^\s*$/;
+        var TEXT_NODE = 3;
 
         function getTextNodes(node) {
-            if (node.nodeType == 3) {
-                if (includeWhitespaceNodes || !whitespace.test(node.nodeValue)) {
+            if (node.nodeType == TEXT_NODE) {
+                if (includeWhitespaceNodes || !onlyWhitespaces.test(node.nodeValue)) {
                     textNodes.push(node);
                 }
             } else {
@@ -94,21 +98,16 @@
     }
 
     function shouldIgnore(node) {
-        var $node = $(node);
-        var lcIgnoreTags = $.map(options.ignoreTags, function(tag) {
-            return tag.toLowerCase();
-        });
-
-        while($node.get(0) != context) {
-            if ($node.get(0).tagName && $.inArray($node.get(0).tagName.toLowerCase(), lcIgnoreTags) > -1) {
+        while(node != context) {
+            if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
                 return true;
             }
 
-            if ($node.hasClass(options.ignoreClass)) {
+            if ($(node).hasClass(options.ignoreClass)) {
                 return true;
             }
 
-            $node = $node.parent();
+            node = node.parentNode;
         }
 
         return false;

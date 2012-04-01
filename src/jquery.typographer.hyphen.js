@@ -29,13 +29,17 @@
             console.log('typographer.hyphen.init()');
             context = context || $(this).get(0);
             options = $.extend({}, $.fn.typographer.hyphen.defaults, opts);
+            options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
+                return tagName.toLowerCase();
+            });
 
             $(context).addClass(options.contextClass);
             execute();
         }
     };
     var trie = null;
-    var shy = '&shy;';
+    //var shy = '&shy;';
+    var shy = '\u00AD'; // &shy (soft-hyphen)
 
     function execute() {
         console.log("typographer.hyphen.execute()");
@@ -44,9 +48,15 @@
         trie = trie || buildTrie($.fn.typographer.hyphen.patterns);
         console.timeEnd('buildTrie');
 
-        var text = $(context).text();
-        var hyphenatedText = hyphenate(text);
-        context.innerHTML = hyphenatedText;
+        var textNodes = getTextNodesIn(context, false);
+        $.each(textNodes, function() {
+            if(shouldIgnore(this)) return true;
+
+            var text = this.nodeValue;
+            var hyphenatedText = hyphenate(text);
+
+            this.nodeValue = hyphenatedText;
+        });
     }
 
     function buildTrie(patterns) {
@@ -81,6 +91,42 @@
         return trie;
     }
 
+    function getTextNodesIn(node, includeWhitespaceNodes) {
+        var textNodes = [], onlyWhitespaces = /^\s*$/;
+        var TEXT_NODE = 3;
+
+        function getTextNodes(node) {
+            if (node.nodeType == TEXT_NODE) {
+                if (includeWhitespaceNodes || !onlyWhitespaces.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            } else {
+                for (var i = 0, len = node.childNodes.length; i < len; ++i) {
+                    getTextNodes(node.childNodes[i]);
+                }
+            }
+        }
+
+        getTextNodes(node);
+        return textNodes;
+    }
+
+    function shouldIgnore(node) {
+        while(node != context) {
+            if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
+                return true;
+            }
+
+            if ($(node).hasClass(options.ignoreClass)) {
+                return true;
+            }
+
+            node = node.parentNode;
+        }
+
+        return false;
+    }
+
     function hyphenate(text) {
         console.time('getWordsToHyphenate');
         var words = getWordsToHyphenate(text);
@@ -99,11 +145,12 @@
 
     function getWordsToHyphenate(text) {
         var words = $.grep(
-            text.split(/\s+|[.,;:"'()]+/),
+            text.split(/\s+|[.,;:"'-()]+/),
             function(e) {
-                return e.length >= 3;
+                return e.length >= options.minWordLength;
             }
         );
+        console.log(words);
         return $.unique(words);
     }
 
@@ -213,7 +260,9 @@
         contextClass: 'jquery-typographer-hyphen',
         minWordLength: 3,
         minLeft: 2,
-        minRight: 2
+        minRight: 2,
+        ignoreTags: ['pre', 'code'],
+        ignoreClass: 'ignore-hyphen'
     };
 
 })(jQuery);

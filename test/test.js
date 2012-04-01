@@ -41,52 +41,52 @@ $(document).ready(function() {
 
     });
 
-    var testSpec = [
-        {
-            init: 'A kot i pies w pokoju o zmroku.',
-            expected: 'A&nbsp;kot i&nbsp;pies w&nbsp;pokoju o&nbsp;zmroku.'
-        },
-        {
-            init: 'Jest wieczór, a w pokoju kot i pies u stołu.',
-            expected: 'Jest wieczór, a&nbsp;w&nbsp;pokoju kot i&nbsp;pies u&nbsp;stołu.'
-        },
-        {
-            init: "Ciemno, a\n            w pokoju kot.",
-            expected: 'Ciemno, a&nbsp;w&nbsp;pokoju kot.'
-        },
-        {
-            init: 'a i o u w z',
-            expected: 'a&nbsp;i&nbsp;o&nbsp;u&nbsp;w&nbsp;z'
-        },
-        {
-            init: 'A to <b>w domu o</b> świcie',
-            expected: 'A&nbsp;to <b>w&nbsp;domu o</b>&nbsp;świcie'
-        },
-        {
-            init: 'A to <b>w domu i</b> o świcie',
-            expected: 'A&nbsp;to <b>w&nbsp;domu i</b>&nbsp;o&nbsp;świcie'
-        },
-        {
-            init: 'A oto kod: <code>a w domu</code>',
-            expected: 'A&nbsp;oto kod: <code>a w domu</code>'
-        }
-    ];
+    test('Deorphanization', function() {
+        var testSpec = [
+            {
+                init: 'A kot i pies w pokoju o zmroku.',
+                expected: 'A&nbsp;kot i&nbsp;pies w&nbsp;pokoju o&nbsp;zmroku.'
+            },
+            {
+                init: 'Jest wieczór, a w pokoju kot i pies u stołu.',
+                expected: 'Jest wieczór, a&nbsp;w&nbsp;pokoju kot i&nbsp;pies u&nbsp;stołu.'
+            },
+            {
+                init: "Ciemno, a\n            w pokoju kot.",
+                expected: 'Ciemno, a&nbsp;w&nbsp;pokoju kot.'
+            },
+            {
+                init: 'a i o u w z',
+                expected: 'a&nbsp;i&nbsp;o&nbsp;u&nbsp;w&nbsp;z'
+            },
+            {
+                init: 'A to <b>w domu o</b> świcie',
+                expected: 'A&nbsp;to <b>w&nbsp;domu o</b>&nbsp;świcie'
+            },
+            {
+                init: 'A to <b>w domu i</b> o świcie',
+                expected: 'A&nbsp;to <b>w&nbsp;domu i</b>&nbsp;o&nbsp;świcie'
+            },
+            {
+                init: 'A oto kod: <code>a w domu</code>',
+                expected: 'A&nbsp;oto kod: <code>a w domu</code>'
+            },
+            {
+                init: 'A oto kod: <b class="ignore-orphan">a w domu</b>',
+                expected: 'A&nbsp;oto kod: <b class="ignore-orphan">a w domu</b>'
+            }
+        ];
 
-    var runDeorphanizationTests = function(testSpec) {
-        test('Deorphanization', function() {
-            $.each(testSpec, function(i, data) {
-                $sandbox.get(0).innerHTML = data.init;
+        $.each(testSpec, function(i, data) {
+            $sandbox.get(0).innerHTML = data.init;
 
-                $sandbox.typographer({
-                    modules: ['orphan']
-                });
-
-                equal($sandbox.get(0).innerHTML, data.expected, data.init);
+            $sandbox.typographer({
+                modules: ['orphan']
             });
-        });
-    };
 
-    runDeorphanizationTests(testSpec);
+            equal($sandbox.get(0).innerHTML, data.expected, data.init);
+        });
+    });
 
     test('Public method - deorphanize', function() {
         var init = 'Być u nieba bram';
@@ -137,34 +137,36 @@ $(document).ready(function() {
 
     });
 
-    var testSpec = [
-        {
-            init: 'Białoruska wycieczka krajoznawcza',
-            expected: 'Bia|ło|ru|ska wy|ciecz|ka kra|jo|znaw|cza'
-        },
-        {
-            init: 'Wrona gdzieniegdzie kracze i puchają puchacze',
-            expected: 'Wro|na gdzie|nie|gdzie kra|cze i pu|cha|ją pu|cha|cze'
-        },
-        {
-            init: 'Wrona <code>gdzieniegdzie kracze</code> i puchają puchacze',
-            expected: 'Wro|na <code>gdzieniegdzie kracze</code> i pu|cha|ją pu|cha|cze'
-        }
-    ];
+    test('Hyphenation', function() {
+        var testSpec = [
+            {
+                init: 'Białoruska wycieczka krajoznawcza',
+                expected: 'Bia|ło|ru|ska wy|ciecz|ka kra|jo|znaw|cza'
+            },
+            {
+                init: 'Wrona gdzieniegdzie kracze i puchają puchacze',
+                expected: 'Wro|na gdzie|nie|gdzie kra|cze i pu|cha|ją pu|cha|cze'
+            },
+            {
+                init: 'Wrona <code>gdzieniegdzie kracze</code> i puchają puchacze',
+                expected: 'Wro|na <code>gdzieniegdzie kracze</code> i pu|cha|ją pu|cha|cze'
+            },
+            {
+                init: 'Wrona <span class="ignore-hyphen">gdzieniegdzie kracze</span> i puchają puchacze',
+                expected: 'Wro|na <span class="ignore-hyphen">gdzieniegdzie kracze</span> i pu|cha|ją pu|cha|cze'
+            }
+        ];
 
-    (function runHyphenationTests(testSpec) {
-        test('Hyphenation', function() {
-            $.each(testSpec, function(i, data) {
-                $sandbox.get(0).innerHTML = data.init;
+        $.each(testSpec, function(i, data) {
+            $sandbox.get(0).innerHTML = data.init;
 
-                $sandbox.typographer({
-                    modules: ['hyphen']
-                });
-                var expected = data.expected.replace(/\|/g, '\u00AD');
-                equal($sandbox.get(0).innerHTML, expected, data.init);
+            $sandbox.typographer({
+                modules: ['hyphen']
             });
+            var expected = data.expected.replace(/\|/g, '\u00AD');
+            equal($sandbox.get(0).innerHTML, expected, data.init);
         });
-    }(testSpec));
+    });
 
     test('Public method - splitWord', function() {
         var init = 'truskawkowa';
@@ -178,12 +180,12 @@ $(document).ready(function() {
 
     test('Public method - hyphenate', function() {
         var init = 'truskawkowa symfonia';
-        var expected = 'tru&shy;skaw&shy;ko&shy;wa sym&shy;fo&shy;nia';
+        var expected = 'tru|skaw|ko|wa sym|fo|nia';
 
         ok($.fn.typographer.hyphen.hyphenate, 'Method presence');
         var got = $.fn.typographer.hyphen.hyphenate(init);
 
-        deepEqual(got, expected, 'Hyphenation');
+        deepEqual(got, expected.replace(/\|/g, '\u00AD'), 'Hyphenation');
     });
 
     var minLen = 5;
