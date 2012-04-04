@@ -38,8 +38,7 @@
         }
     };
     var trie = null;
-    //var shy = '&shy;';
-    var shy = '\u00AD'; // &shy (soft-hyphen)
+    var shy = '\u00AD'; // &shy; (soft-hyphen)
 
     function execute() {
         console.log("typographer.hyphen.execute()");
@@ -62,7 +61,7 @@
     function buildTrie(patterns) {
         var trie = {};
         var currentNode;
-        for(var i = 0; i < patterns.length; i++) {
+        for (var i = 0; i < patterns.length; i++) {
             var pattern = patterns[i];
             var letters = pattern.replace(/[0-9]/g, '');
             var points = pattern.split(/[^0-9]/);
