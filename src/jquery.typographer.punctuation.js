@@ -34,53 +34,68 @@
             execute();
         }
     };
-    var bdquo = '&bdquo;';
-    var rdquo = '&rdquo;';
-    var ellip = '&hellip;';
-    var apos = '&rsquo;';
-    var ndash = '&ndash;';
+    var ents = {
+        'bdquo' : '\u201E', // &bdquo; cudzysłów otwierający
+        'rdquo' : '\u201D', // &rdquo; cudzysłów zamykający
+        'laquo' : '\u00AB', // &laquo; cudzysłów otwierający francuski
+        'raquo' : '\u00BB', // &raquo; cudzysłów zamykający francuski
+        'hellip': '\u2026', // &hellip; wielokropek
+        'rsquo' : '\u2019', // &rsquo; apostrof
+        'ndash' : '\u2013', // &ndash; półpauza
+        'mdash' : '\u2014'  // &ndash; pauza
+    };
 
     function execute() {
         console.log("typographer.punctuation.execute()");
 
-        var text = context.innerHTML;
-        var doCorrection = function(c) {
-            text = c.apply(context, [text]);
-        };
+        var textNodes = getTextNodesIn(context, false);
+        $.each(textNodes, function() {
+            if(shouldIgnore(this)) return true;
 
-        doCorrection(correctQuotes);
-        doCorrection(correctEllipsis);
-        doCorrection(correctApostrophe);
-        doCorrection(correctDash);
+            var text = this.nodeValue;
+            text = $.fn.typographer.punctuation.correctQuotes(text);
+            text = $.fn.typographer.punctuation.correctEllipsis(text);
+            text = $.fn.typographer.punctuation.correctApostrophe(text);
+            text = $.fn.typographer.punctuation.correctDash(text);
 
-        context.innerHTML = text;
+            this.nodeValue = text;
+        });
     }
 
-    function correctQuotes(text) {
-        //FIXME: można lepiej
-        console.log('correcting quotes...');
-        text = text.replace(/"([a-z])/gi, bdquo + '$1');
-        text = text.replace(/([a-z])"/gi, '$1' + rdquo);
-        return text;
+    function getTextNodesIn(node, includeWhitespaceNodes) {
+        var textNodes = [], onlyWhitespaces = /^\s*$/;
+        var TEXT_NODE = 3;
+
+        function getTextNodes(node) {
+            if (node.nodeType == TEXT_NODE) {
+                if (includeWhitespaceNodes || !onlyWhitespaces.test(node.nodeValue)) {
+                    textNodes.push(node);
+                }
+            } else {
+                for (var i = 0, len = node.childNodes.length; i < len; ++i) {
+                    getTextNodes(node.childNodes[i]);
+                }
+            }
+        }
+
+        getTextNodes(node);
+        return textNodes;
     }
 
-    function correctEllipsis(text) {
-        console.log('correcting ellipsis...');
-        text = text.replace(/\.\.\./gi, ellip);
-        return text;
-    }
+    function shouldIgnore(node) {
+        while(node != context) {
+            if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
+                return true;
+            }
 
-    function correctApostrophe(text) {
-        console.log('correcting apostrophe...');
-        text = text.replace(/'/gi, apos);
-        return text;
-    }
+            if ($(node).hasClass(options.ignoreClass)) {
+                return true;
+            }
 
-    function correctDash(text) {
-        console.log('correcting dash...');
-        text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + ndash + '$2');
-        text = text.replace(/\s+-\s+/gi, ' ' + ndash + ' ');
-        return text;
+            node = node.parentNode;
+        }
+
+        return false;
     }
 
     $.fn.typographer.punctuation = function(method) {
@@ -97,8 +112,46 @@
         });
     };
 
+    $.fn.typographer.punctuation.correctQuotes = function(text) {
+        console.log('correcting quotes...');
+
+        // zamiana cudzysłowów prostych na drukarskie
+        text = text.replace(/"([a-ząćęłńóśżź])/gi, ents.bdquo + '$1');
+        text = text.replace(/([a-ząćęłńóśżź])"/gi, '$1' + ents.rdquo);
+
+        // korekta cudzysłowów francuskich
+        text = text.replace(/\u00BB([a-ząćęłńóśżź])/gi, ents.laquo + '$1');
+        text = text.replace(/([a-ząćęłńóśżź])\u00AB/gi, '$1' + ents.raquo);
+
+        return text;
+    }
+
+    $.fn.typographer.punctuation.correctEllipsis = function(text) {
+        console.log('correcting ellipsis...');
+        text = text.replace(/\.\.\./gi, ents.hellip);
+        return text;
+    }
+
+    $.fn.typographer.punctuation.correctApostrophe = function(text) {
+        console.log('correcting apostrophe...');
+        text = text.replace(/'/gi, ents.rsquo);
+        return text;
+    }
+
+    $.fn.typographer.punctuation.correctDash = function(text) {
+        console.log('correcting dash...');
+        text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + ents.ndash + '$2');
+        text = text.replace(/(\d)\s+(?:\u2012|\u2013)\s+(\d)/gi, '$1' + ents.ndash + '$2');
+        text = text.replace(/\s+-\s+/gi, ' ' + ents.ndash + ' ');
+        text = text.replace(/([a-ząćęłńóśżź])(?:\u2012|\u2013)([a-ząćęłńóśżź])/gi, "$1-$2");
+        return text;
+    }
+
+    $.fn.typographer.punctuation.entities = ents;
+
     $.fn.typographer.punctuation.defaults = {
         contextClass: 'jquery-typographer-punctuation',
+        ignoreTags: ['pre', 'code'],
+        ignoreClass: 'ignore-punctuation'
     };
-
 })(jQuery);
