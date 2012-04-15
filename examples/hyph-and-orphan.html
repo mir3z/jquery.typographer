@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="../lib/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="../src/jquery.typographer.js"></script>
+    <script type="text/javascript" src="../src/jquery.typographer.common.js"></script>
     <script type="text/javascript" src="../src/jquery.typographer.hyphen.js"></script>
     <script type="text/javascript" src="../src/hyph-pl.js"></script>
     <script type="text/javascript" src="../src/jquery.typographer.orphan.js"></script>
@@ -13,7 +14,10 @@
 
     <style type="text/css">
         #wrapper {
+            font-family: "DejaVu Serif", "Palatino", serif;
             text-align: center;
+            margin: 10px auto 30px;
+            width: 900px;
         }
         div.col {
             width: 300px;
@@ -22,8 +26,7 @@
             display: inline-block;
             color: #333;
             vertical-align: top;
-            font-size: 10pt !important;
-            font-family: serif !important;
+            font-size: 10pt;
             line-height: 1.3em;
         }
         #left {
@@ -31,6 +34,12 @@
         }
         #right {
             border: 2px solid green;
+        }
+        .credits {
+            padding-right: 145px;
+            text-align: right;
+            margin-top: 15px;
+            font-size: 10px;
         }
     </style>
   </head>
@@ -165,6 +174,10 @@
         pod przerostem potwornej korpulencji. Ale naiwne przedmiejskie dzwonki i perkalikowe,
         niewybredne kwiatuszki stały bezradne w swych nakrochmalonych, różowych i białych koszulkach,
         bez zrozumienia dla wielkiej tragedii słonecznika.
+      </div>
+
+      <div class="credits">
+        Bruno Schultz, <i>Sklepy cynamonowe</i>
       </div>
     </div>
 

@@ -6,12 +6,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="text/javascript" src="../lib/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="../src/jquery.typographer.js"></script>
+    <script type="text/javascript" src="../src/jquery.typographer.common.js"></script>
     <script type="text/javascript" src="../src/jquery.typographer.punctuation.js"></script>
     <title></title>
 
     <style type="text/css">
         #wrapper {
+            font-family: "DejaVu Serif", "Palatino", serif;
             text-align: center;
+            margin: 10px auto 30px;
+            width: 900px;
         }
         div.col {
             width: 400px;
@@ -21,7 +25,6 @@
             color: #333;
             vertical-align: top;
             font-size: 10pt !important;
-            font-family: serif !important;
             line-height: 1.3em;
         }
         .letters-loosely {
@@ -41,19 +44,21 @@
 
       <h1>Korekta cudzysłowów</h1>
       <div class="left col">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at quam nisl. Pellentesque
-        lorem diam, aliquet non fringilla id, aliquam ac nisl. Curabitur "eget nisi vel" mauris
-        sollicitudin varius. Pellentesque vel felis risus. Aliquam "feugiat" dui ut massa fermentum
-        blandit. Quisque eget enim ipsum, sit amet interdum lorem. Duis "pulvinar velit sit" amet elit
-        facilisis fermentum.
+        Koleżanki i koledzy, realizacja wcześniej nakreślonych "zadań programowych" zmusza nas do
+        przeanalizowania dalszych kierunków rozwoju. Praktyka dnia codziennego dowodzi, że dalszy
+        rozwój różnych form działalności pociąga za sobą proces wdrażania i unowocześniania "systemu
+        &raquo;szkolenia&laquo; kadry" odpowiadającemu naszym potrzebom. Wagi i znaczenia tych "problemów" nie trzeba
+        szerzej udowadniać, ponieważ konsultacja z szerokim aktywem zabezpiecza udział szerokiej
+        grupie w kształtowaniu "systemu powszechnego uczestnictwa".
       </div>
 
       <div class="right col correct-me">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at quam nisl. Pellentesque
-        lorem diam, aliquet non fringilla id, aliquam ac nisl. Curabitur "eget nisi vel" mauris
-        sollicitudin varius. Pellentesque vel felis risus. Aliquam "feugiat" dui ut massa fermentum
-        blandit. Quisque eget enim ipsum, sit amet interdum lorem. Duis "pulvinar velit sit" amet elit
-        facilisis fermentum.
+        Koleżanki i koledzy, realizacja wcześniej nakreślonych "zadań programowych" zmusza nas do
+        przeanalizowania dalszych kierunków rozwoju. Praktyka dnia codziennego dowodzi, że dalszy
+        rozwój różnych form działalności pociąga za sobą proces wdrażania i unowocześniania "systemu
+        &raquo;szkolenia&laquo; kadry" odpowiadającemu naszym potrzebom. Wagi i znaczenia tych "problemów" nie trzeba
+        szerzej udowadniać, ponieważ konsultacja z szerokim aktywem zabezpiecza udział szerokiej
+        grupie w kształtowaniu "systemu powszechnego uczestnictwa".
       </div>
 
       <h1>Korekta wielokropka</h1>
@@ -81,20 +86,45 @@
 
       <h1>Korekta myślnika</h1>
       <div class="left col">
-        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24. <br/>
-        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.<br/>
-        biało-czerowona.<br/>
-        29-krotny.<br/>
-        w latach 1989 - 2001<br/>
-        dwu-, trzy- lub czteroliterowy
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24.
       </div>
       <div class="right col correct-me">
-        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24. <br/>
-        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.<br/>
-        biało-czerowona.<br/>
-        29-krotny.<br/>
-        w latach 1989 - 2001</br>
-        dwu-, trzy- lub czteroliterowy
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24.
+      </div>
+
+      <div class="left col">
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.
+      </div>
+      <div class="right col correct-me">
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.
+      </div>
+
+      <div class="left col">
+        w latach 1989 - 2001
+      </div>
+      <div class="right col correct-me">
+        w latach 1989 - 2001
+      </div>
+
+      <div class="left col">
+        w latach 1989 &ndash; 2001
+      </div>
+      <div class="right col correct-me">
+        w latach 1989 &ndash; 2001
+      </div>
+
+      <div class="left col">
+        działalność PAN&ndash;u
+      </div>
+      <div class="right col correct-me">
+        działalność PAN&ndash;u
+      </div>
+
+      <div class="left col">
+        biało&ndash;czerwona
+      </div>
+      <div class="right col correct-me">
+        biało&ndash;czerwona
       </div>
     </div>
 
