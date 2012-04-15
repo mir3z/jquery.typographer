@@ -48,9 +48,9 @@
     function execute() {
         console.log("typographer.punctuation.execute()");
 
-        var textNodes = getTextNodesIn(context, false);
+        var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
         $.each(textNodes, function() {
-            if(shouldIgnore(this)) return true;
+            if($.fn.typographer.common.shouldIgnore(this, context, options)) return true;
 
             var text = this.nodeValue;
             text = $.fn.typographer.punctuation.correctQuotes(text);
@@ -60,42 +60,6 @@
 
             this.nodeValue = text;
         });
-    }
-
-    function getTextNodesIn(node, includeWhitespaceNodes) {
-        var textNodes = [], onlyWhitespaces = /^\s*$/;
-        var TEXT_NODE = 3;
-
-        function getTextNodes(node) {
-            if (node.nodeType == TEXT_NODE) {
-                if (includeWhitespaceNodes || !onlyWhitespaces.test(node.nodeValue)) {
-                    textNodes.push(node);
-                }
-            } else {
-                for (var i = 0, len = node.childNodes.length; i < len; ++i) {
-                    getTextNodes(node.childNodes[i]);
-                }
-            }
-        }
-
-        getTextNodes(node);
-        return textNodes;
-    }
-
-    function shouldIgnore(node) {
-        while(node != context) {
-            if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
-                return true;
-            }
-
-            if ($(node).hasClass(options.ignoreClass)) {
-                return true;
-            }
-
-            node = node.parentNode;
-        }
-
-        return false;
     }
 
     $.fn.typographer.punctuation = function(method) {
