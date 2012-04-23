@@ -26,7 +26,6 @@
     var options = {};
     var methods = {
         init: function(opts) {
-            console.log('typographer.orphan.init()');
             context = context || $(this).get(0);
             options = $.extend({}, $.fn.typographer.orphan.defaults, opts);
             options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
@@ -54,8 +53,6 @@
     }
 
     function execute() {
-        console.log("typographer.orphan.execute()");
-
         var orphanAtTheEnd = false;
         var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
         $.each(textNodes, function() {

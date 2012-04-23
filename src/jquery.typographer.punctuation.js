@@ -26,7 +26,6 @@
     var options = {};
     var methods = {
         init: function(opts) {
-            console.log('typographer.punctuation.init()');
             context = $(this).get(0);
             options = $.extend({}, $.fn.typographer.punctuation.defaults, opts);
 
@@ -46,8 +45,6 @@
     };
 
     function execute() {
-        console.log("typographer.punctuation.execute()");
-
         var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
         $.each(textNodes, function() {
             if($.fn.typographer.common.shouldIgnore(this, context, options)) return true;
@@ -77,8 +74,6 @@
     };
 
     $.fn.typographer.punctuation.correctQuotes = function(text) {
-        console.log('correcting quotes...');
-
         // zamiana cudzysłowów prostych na drukarskie
         text = text.replace(/"([a-ząćęłńóśżź])/gi, ents.bdquo + '$1');
         text = text.replace(/([a-ząćęłńóśżź])"/gi, '$1' + ents.rdquo);
@@ -91,19 +86,16 @@
     }
 
     $.fn.typographer.punctuation.correctEllipsis = function(text) {
-        console.log('correcting ellipsis...');
         text = text.replace(/\.\.\./gi, ents.hellip);
         return text;
     }
 
     $.fn.typographer.punctuation.correctApostrophe = function(text) {
-        console.log('correcting apostrophe...');
         text = text.replace(/'/gi, ents.rsquo);
         return text;
     }
 
     $.fn.typographer.punctuation.correctDash = function(text) {
-        console.log('correcting dash...');
         text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + ents.ndash + '$2');
         text = text.replace(/(\d)\s+(?:\u2012|\u2013)\s+(\d)/gi, '$1' + ents.ndash + '$2');
         text = text.replace(/\s+-\s+/gi, ' ' + ents.ndash + ' ');

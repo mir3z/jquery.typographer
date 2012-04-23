@@ -26,7 +26,6 @@
     var options = {};
     var methods = {
         init: function(opts) {
-            console.log('typographer.hyphen.init()');
             context = context || $(this).get(0);
             options = $.extend({}, $.fn.typographer.hyphen.defaults, opts);
             options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
@@ -41,11 +40,7 @@
     var shy = '\u00AD'; // &shy; (soft-hyphen)
 
     function execute() {
-        console.log("typographer.hyphen.execute()");
-
-        console.time('buildTrie');
         trie = trie || buildTrie($.fn.typographer.hyphen.patterns);
-        console.timeEnd('buildTrie');
 
         var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
         $.each(textNodes, function() {
@@ -91,18 +86,15 @@
     }
 
     function hyphenate(text) {
-        console.time('getWordsToHyphenate');
         var words = getWordsToHyphenate(text);
-        console.timeEnd('getWordsToHyphenate');
 
-        console.time('hyphenateWords');
         $.each(words, function(i, word) {
             var parts = splitWord(word);
             var hyphWord = parts.join(shy);
             var regex = new RegExp(word, 'g');
             text = text.replace(regex, hyphWord);
         });
-        console.timeEnd('hyphenateWords');
+
         return text;
     }
 
@@ -113,7 +105,7 @@
                 return e.length >= options.minWordLength;
             }
         );
-        console.log(words);
+
         return $.unique(words);
     }
 

@@ -58,11 +58,8 @@
     }
 
     function execute() {
-        console.log('typographer execute');
-
         for(var prop in $.fn.typographer) {
             if (shouldRunModule(prop)) {
-                console.log('typographer.' + prop + ' present');
                 $(context).typographer[prop].apply(context, [options[prop]]);
             }
         }
