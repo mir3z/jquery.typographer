@@ -48,7 +48,8 @@ $(document).ready(function() {
                 modules: ['hyphen']
             });
             var expected = data.expected.replace(/\|/g, '\u00AD');
-            equal($sandbox.get(0).innerHTML, expected, data.init);
+            var actual = $sandbox.normalizedHtml();
+            equal(actual, expected, data.init);
         });
     });
 

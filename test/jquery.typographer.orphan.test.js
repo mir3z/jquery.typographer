@@ -61,7 +61,8 @@ $(document).ready(function() {
                 modules: ['orphan']
             });
 
-            equal($sandbox.get(0).innerHTML, data.expected, data.init);
+            var actual = $sandbox.normalizedHtml();
+            equal(actual, data.expected, data.init);
         });
     });
 

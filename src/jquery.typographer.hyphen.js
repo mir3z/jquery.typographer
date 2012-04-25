@@ -54,21 +54,49 @@
     }
 
     function buildTrie(patterns) {
+        var getPoints = function(pattern) {
+            var points = [];
+
+            if ("ze4p".split(/\D/).length == 1) { // IE<9
+                var chars = pattern.split(''), c, i = 0, lastWasNum = false;
+
+                while (i < chars.length) {
+                    c = chars[i];
+                    if (~~c) {  // c is numeric
+                        points.push(c);
+                        i += 2;
+                        lastWasNum = true;
+                    } else {
+                        points.push(0);
+                        i += 1;
+                        lastWasNum = false;
+                    }
+                }
+                if (!lastWasNum) {
+                    points.push(0);
+                }
+            } else {
+                points = pattern.split(/\D/);
+                for (var k = 0; k < points.length; ++k) {
+                    points[k] = points[k] || '0';
+                }
+            }
+
+            return points;
+        };
+
+
         var trie = {};
         var currentNode;
         for (var i = 0; i < patterns.length; i++) {
             var pattern = patterns[i];
-            var letters = pattern.replace(/[0-9]/g, '');
-            var points = pattern.split(/[^0-9]/);
-
-            for (var k = 0; k < points.length; ++k) {
-                points[k] = points[k] || '0';
-            }
+            var letters = pattern.replace(/\d/g, '');
+            var points = getPoints(pattern);
 
             currentNode = trie;
 
             for(var j = 0; j < letters.length; j++) {
-                var letter = letters[j];
+                var letter = letters.charAt(j);
 
                 var pos = currentNode[letter];
 
@@ -149,12 +177,13 @@
             points[len] = 0;
         }
 
+
         for (var i = 0; i < wordPattern.length; i++) {
             var node = trie;
 
             var part = wordPattern.slice(i);
             for(var j = 0; j < part.length; j++) {
-                var char = part[j];
+                var char = part.charAt(j);
 
                 if(node[char] != null) {
                     node = node[char];
