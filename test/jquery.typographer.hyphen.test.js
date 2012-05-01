@@ -1,12 +1,13 @@
 $(document).ready(function() {
     var $sandbox = $('#sandbox');
 
-    module('typographer.hyphen', {
+    module('typographer_hyphen', {
         teardown: function() {
-            $sandbox.empty();
-            $.fn.typographer.hyphen.defaults.minWordLength = 3;
-            $.fn.typographer.hyphen.defaults.minLeft = 2;
-            $.fn.typographer.hyphen.defaults.minRight = 2;
+            teardownSandbox($sandbox);
+
+            $.fn.typographer_hyphen.defaults.minWordLength = 3;
+            $.fn.typographer_hyphen.defaults.minLeft = 2;
+            $.fn.typographer_hyphen.defaults.minRight = 2;
         }
     });
 
@@ -15,8 +16,8 @@ $(document).ready(function() {
             modules: ['hyphen']
         });
 
-        ok($.fn.typographer.hyphen.defaults, '$.fn.typographer.hyphen.defaults present');
-        ok($sandbox.hasClass($.fn.typographer.hyphen.defaults.contextClass),
+        ok($.fn.typographer_hyphen.defaults, '$.fn.typographer_hyphen.defaults present');
+        ok($sandbox.hasClass($.fn.typographer_hyphen.defaults.contextClass),
            'Context has valid class');
 
     });
@@ -50,6 +51,8 @@ $(document).ready(function() {
             var expected = data.expected.replace(/\|/g, '\u00AD');
             var actual = $sandbox.normalizedHtml();
             equal(actual, expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 
@@ -57,8 +60,8 @@ $(document).ready(function() {
         var init = 'truskawkowa';
         var expected = ['tru', 'skaw', 'ko', 'wa'];
 
-        ok($.fn.typographer.hyphen.splitWord, 'Method presence');
-        var got = $.fn.typographer.hyphen.splitWord(init);
+        ok($.typographer_hyphen.splitWord, 'Method presence');
+        var got = $.typographer_hyphen.splitWord(init);
 
         deepEqual(got, expected, 'Word splitting');
     });
@@ -67,8 +70,8 @@ $(document).ready(function() {
         var init = 'truskawkowa symfonia';
         var expected = 'tru|skaw|ko|wa sym|fo|nia';
 
-        ok($.fn.typographer.hyphen.hyphenate, 'Method presence');
-        var got = $.fn.typographer.hyphen.hyphenate(init);
+        ok($.typographer_hyphen.hyphenate, 'Method presence');
+        var got = $.typographer_hyphen.hyphenate(init);
 
         deepEqual(got, expected.replace(/\|/g, '\u00AD'), 'Hyphenation');
     });
@@ -78,9 +81,9 @@ $(document).ready(function() {
         var init = 'mama';
         var expected = ['mama'];
 
-        $.fn.typographer.hyphen.defaults.minWordLength = minLen;
+        $.fn.typographer_hyphen.defaults.minWordLength = minLen;
 
-        var got = $.fn.typographer.hyphen.splitWord(init);
+        var got = $.typographer_hyphen.splitWord(init);
         deepEqual(got, expected, 'Word splitting');
     });
 
@@ -89,9 +92,9 @@ $(document).ready(function() {
         var init = 'rabarbar';
         var expected = ['rabar', 'bar'];
 
-        $.fn.typographer.hyphen.defaults.minLeft = left;
+        $.fn.typographer_hyphen.defaults.minLeft = left;
 
-        var got = $.fn.typographer.hyphen.splitWord(init);
+        var got = $.typographer_hyphen.splitWord(init);
         deepEqual(got, expected, 'Word splitting');
     });
 
@@ -100,9 +103,9 @@ $(document).ready(function() {
         var init = 'rabarbar';
         var expected = ['ra', 'barbar'];
 
-        $.fn.typographer.hyphen.defaults.minRight = right;
+        $.fn.typographer_hyphen.defaults.minRight = right;
 
-        var got = $.fn.typographer.hyphen.splitWord(init);
+        var got = $.typographer_hyphen.splitWord(init);
         deepEqual(got, expected, 'Word splitting');
     });
 });

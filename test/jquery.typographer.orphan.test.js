@@ -1,9 +1,9 @@
 $(document).ready(function() {
     var $sandbox = $('#sandbox');
 
-    module('typographer.orphan', {
+    module('typographer_orphan', {
         teardown: function() {
-            $sandbox.empty();
+            teardownSandbox($sandbox);
         }
     });
 
@@ -12,8 +12,8 @@ $(document).ready(function() {
             modules: ['orphan']
         });
 
-        ok($.fn.typographer.orphan.defaults, '$.fn.typographer.orphan.defaults present');
-        ok($sandbox.hasClass($.fn.typographer.orphan.defaults.contextClass),
+        ok($.fn.typographer_orphan.defaults, '$.fn.typographer_orphan.defaults present');
+        ok($sandbox.hasClass($.fn.typographer_orphan.defaults.contextClass),
            'Context has valid class');
 
     });
@@ -63,6 +63,8 @@ $(document).ready(function() {
 
             var actual = $sandbox.normalizedHtml();
             equal(actual, data.expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 
@@ -70,8 +72,8 @@ $(document).ready(function() {
         var init = 'Być u nieba bram';
         var expected = 'Być u\u00A0nieba bram';
 
-        ok($.fn.typographer.orphan.deorphanize, 'Deorphanize method present');
-        var got = $.fn.typographer.orphan.deorphanize(init);
+        ok($.typographer_orphan.deorphanize, 'Deorphanize method present');
+        var got = $.typographer_orphan.deorphanize(init);
 
         equal(got, expected, 'Non-breaking spaces inserted correctly.');
     });

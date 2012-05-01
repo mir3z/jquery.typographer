@@ -21,77 +21,122 @@
  * THE SOFTWARE.
  */
 
-(function($) {
-    var context = null;
-    var options = {};
-    var methods = {
-        init: function(opts) {
-            context = context || $(this).get(0);
-            options = $.extend({}, $.fn.typographer.hyphen.defaults, opts);
-            options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
-                return tagName.toLowerCase();
-            });
+;(function($, window, document, undefined) {
 
-            $(context).addClass(options.contextClass);
-            execute();
-        }
+    var plugin = {
+        ns: 'typographer',
+        name: 'hyphen'
     };
-    var trie = null;
-    var shy = '\u00AD'; // &shy; (soft-hyphen)
+    plugin.fullName = plugin.ns + '_' + plugin.name;
 
-    function execute() {
-        trie = trie || buildTrie($.fn.typographer.hyphen.patterns);
+    function Hyphenator(context, options) {
+        this.context = context;
+        this.$context = $(context);
+        this.options = $.extend({}, $.fn[plugin.fullName].defaults, options);
 
-        var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
+        this.init();
+    }
+
+    Hyphenator.prototype.init = function() {
+        this.options.ignoreTags = Utils.normalizeTagNames(this.options.ignoreTags);
+        this.$context.addClass(this.options.contextClass);
+
+        Hyphenator.trie = Hyphenator.trie || new Array();
+        if (!Hyphenator.trie[this.options.lang]) {
+            this.rebuildTrie(this.options.lang);
+        }
+
+        this.execute();
+    };
+
+    Hyphenator.prototype.execute = function() {
+        var textNodes = Utils.getTextNodesIn(this.context, false);
+        var self = this;
+
         $.each(textNodes, function() {
-            if($.fn.typographer.common.shouldIgnore(this, context, options)) return true;
+            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
 
             var text = this.nodeValue;
-            var hyphenatedText = hyphenate(text);
-
-            this.nodeValue = hyphenatedText;
+            this.nodeValue = self.hyphenate(text);
         });
+    };
+
+    Hyphenator.prototype.splitWord = function(word) {
+        return Hyphenator.splitWord(word, this.options);
+    };
+
+    Hyphenator.prototype.hyphenate = function(text) {
+        return Hyphenator.hyphenate(text, this.options);
+    };
+
+    Hyphenator.prototype.rebuildTrie = function(lang) {
+        var patterns = getPatterns(lang);
+        if (patterns !== undefined) {
+            Hyphenator.trie[lang] = buildTrie(patterns);
+        } else {
+            $.error('Hyphenation patterns for language "' + lang + '" are undefined');
+        }
+    };
+
+    Hyphenator.splitWord = function(word, options) {
+        options = $.extend({}, $.fn[plugin.fullName].defaults, options);
+
+        if (word.length < options.minWordLength) return [word];
+        if ($.fn.typographer_hyphen.patterns.exceptions[options.lang][word]) {
+            return $.fn.typographer_hyphen.patterns.exceptions[options.lang][word];
+        }
+
+        var points = computeHyphenationPoints(Hyphenator.trie[options.lang], word);
+        for (var i = 0; i <= options.minLeft; i++) {
+            points[i] = 0;
+        }
+        for (var i = 1, len = points.length; i <= options.minRight; i++) {
+            points[len-i] = 0;
+        }
+
+        var pieces = new Array();
+        var piece = '';
+        var letters = word.split('');
+        for (i = 0; i < word.length; i++) {
+            var char = letters[i];
+            var point = points[i+2];
+
+            piece += char;
+            if (point % 2 == 1) {
+                pieces.push(piece);
+                piece = '';
+            }
+        }
+        pieces.push(piece);
+
+        return pieces;
+    };
+
+    Hyphenator.hyphenate = function(text, options) {
+        options = $.extend({}, $.fn[plugin.fullName].defaults, options);
+        var words = getWordsToHyphenate(text, options);
+
+        $.each(words, function(i, word) {
+            var parts = $[plugin.fullName].splitWord(word, options);
+            var hyphWord = parts.join(Entities.shy);
+            var regex = new RegExp(word, 'g');
+            text = text.replace(regex, hyphWord);
+        });
+
+        return text;
+    };
+
+    function getPatterns(lang) {
+        return $.fn[plugin.fullName]['patterns'][lang];
     }
 
     function buildTrie(patterns) {
-        var getPoints = function(pattern) {
-            var points = [];
-
-            if ("ze4p".split(/\D/).length == 1) { // IE<9
-                var chars = pattern.split(''), c, i = 0, lastWasNum = false;
-
-                while (i < chars.length) {
-                    c = chars[i];
-                    if (~~c) {  // c is numeric
-                        points.push(c);
-                        i += 2;
-                        lastWasNum = true;
-                    } else {
-                        points.push(0);
-                        i += 1;
-                        lastWasNum = false;
-                    }
-                }
-                if (!lastWasNum) {
-                    points.push(0);
-                }
-            } else {
-                points = pattern.split(/\D/);
-                for (var k = 0; k < points.length; ++k) {
-                    points[k] = points[k] || '0';
-                }
-            }
-
-            return points;
-        };
-
-
         var trie = {};
         var currentNode;
         for (var i = 0; i < patterns.length; i++) {
             var pattern = patterns[i];
             var letters = pattern.replace(/\d/g, '');
-            var points = getPoints(pattern);
+            var points = getPatternPoints(pattern);
 
             currentNode = trie;
 
@@ -109,74 +154,47 @@
                 }
             }
         }
-
         return trie;
     }
 
-    function hyphenate(text) {
-        var words = getWordsToHyphenate(text);
+    function getPatternPoints(pattern) {
+        var points = [];
 
-        $.each(words, function(i, word) {
-            var parts = splitWord(word);
-            var hyphWord = parts.join(shy);
-            var regex = new RegExp(word, 'g');
-            text = text.replace(regex, hyphWord);
-        });
+        if ("ze4p".split(/\D/).length == 1) { // IE<9
+            var chars = pattern.split(''), c, i = 0, lastWasNum = false;
 
-        return text;
-    }
-
-    function getWordsToHyphenate(text) {
-        var words = $.grep(
-            text.split(/\s+|[.,;:"'-()]+/),
-            function(e) {
-                return e.length >= options.minWordLength;
+            while (i < chars.length) {
+                c = chars[i];
+                if (~~c) {  // c is numeric
+                    points.push(c);
+                    i += 2;
+                    lastWasNum = true;
+                } else {
+                    points.push(0);
+                    i += 1;
+                    lastWasNum = false;
+                }
             }
-        );
-
-        return $.unique(words);
-    }
-
-    function splitWord(word) {
-        if (word.length < options.minWordLength) return [word];
-        if ($.fn.typographer.hyphen.exceptions[word]) {
-            return $.fn.typographer.hyphen.exceptions[word];
-        }
-
-        var points = computeHyphenationPoints(word);
-        for (var i = 0; i <= options.minLeft; i++) {
-            points[i] = 0;
-        }
-        for (var i = 1, len = points.length; i <= options.minRight; i++) {
-            points[len-i] = 0;
-        }
-
-        var pieces = [];
-        var piece = '';
-        var letters = word.split('');
-        for (i = 0; i < word.length; i++) {
-            var char = letters[i];
-            var point = points[i+2];
-
-            piece += char;
-            if (point % 2 == 1) {
-                pieces.push(piece);
-                piece = '';
+            if (!lastWasNum) {
+                points.push(0);
+            }
+        } else {
+            points = pattern.split(/\D/);
+            for (var k = 0; k < points.length; ++k) {
+                points[k] = points[k] || '0';
             }
         }
-        pieces.push(piece);
 
-        return pieces;
+        return points;
     }
 
-    function computeHyphenationPoints(word) {
+    function computeHyphenationPoints(trie, word) {
         var wordPattern = '.' + word + '.';
         var len = wordPattern.length;
         var points = new Array(len);
         while (--len >= 0) {
             points[len] = 0;
         }
-
 
         for (var i = 0; i < wordPattern.length; i++) {
             var node = trie;
@@ -203,50 +221,44 @@
         return points;
     }
 
-    $.fn.typographer = $.fn.typographer || function() {
-        context = $(this).get(0);
-        return $.fn.typographer;
-    };
+    function getWordsToHyphenate(text, options) {
+        var words = $.grep(
+            text.split(/\s+|[.,;:"'-()]+/),
+            function(e) {
+                return e.length >= options.minWordLength;
+            }
+        );
 
-    $.fn.typographer.hyphen = function(method) {
-        var args = arguments;
+        return $.unique(words);
+    }
 
-        return $(this).each(function() {
-            if (methods[method]) {
-                return methods[method].apply(this, Array.prototype.slice.call(args, 1));
-            } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, args);
-            } else {
-                $.error('Method ' +  method + ' does not exist on jQuery.typographer.hyphen');
+    $.fn[plugin.fullName] = function(options) {
+        return this.each(function () {
+            if (!$.data(this, plugin.fullName)) {
+                $.data(this, plugin.fullName, new Hyphenator(this, options));
             }
         });
+    }
+
+    $.fn[plugin.fullName].entities = {
+        shy: '\u00AD' // soft-hyphen, &shy;
     };
 
-    $.fn.typographer.hyphen.splitWord = function(word) {
-        trie = trie || buildTrie($.fn.typographer.hyphen.patterns);
-        options = $.extend({}, $.fn.typographer.hyphen.defaults);
-
-        return splitWord(word);
-    };
-
-    $.fn.typographer.hyphen.hyphenate = function(text) {
-        trie = trie || buildTrie($.fn.typographer.hyphen.patterns);
-        options = $.extend({}, $.fn.typographer.hyphen.defaults);
-
-        return hyphenate(text);
-    };
-
-    $.fn.typographer.hyphen.rebuildTrie = function() {
-        trie = buildTrie($.fn.typographer.hyphen.patterns);
-    };
-
-    $.fn.typographer.hyphen.defaults = {
-        contextClass: 'jquery-typographer-hyphen',
+    $.fn[plugin.fullName].defaults = {
+        contextClass: 'jquery-' + plugin.ns + '-' + plugin.name,
+        lang: 'pl',
         minWordLength: 3,
         minLeft: 2,
         minRight: 2,
         ignoreTags: ['pre', 'code'],
-        ignoreClass: 'ignore-hyphen'
+        ignoreClass: 'ignore-' + plugin.name
     };
 
-})(jQuery);
+    $[plugin.fullName] = {
+        splitWord: Hyphenator.splitWord,
+        hyphenate: Hyphenator.hyphenate
+    };
+
+    var Utils = $.typographer_common;
+    var Entities = $.fn[plugin.fullName].entities;
+})(jQuery, window, document);

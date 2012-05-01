@@ -21,71 +21,67 @@
  * THE SOFTWARE.
  */
 
-(function($) {
-    var context = null;
-    var options = {};
-    var methods = {
-        init: function(opts) {
-            context = $(this).get(0);
-            options = $.extend({}, $.fn.typographer.defaults, opts);
-            saveState();
+;(function($, window, document, undefined) {
+    var plugin = {
+        name: 'typographer'
+    };
 
-            $(context).addClass(options.contextClass);
-            execute();
-        },
-        destroy: function() {
-            teardown();
-        }
+    function Typographer(context, options) {
+        this.context = context;
+        this.$context = $(context);
+        this.options = $.extend({}, $.fn[plugin.name].defaults, options);
+
+        this.init();
     }
 
-    /**
-     * Associates plugin's options with context element.
-     */
-    function saveState() {
-        $(context).data('jquery-typographer', options);
-    }
+    Typographer.prototype.init = function() {
+        this.$context.addClass(this.options.contextClass);
+        this.execute();
+    };
 
-    /**
-     * Restores plugin's options from data associated with context element.
-     */
-    function restoreState(ctx) {
-        context = ctx;
-        options = $(context).data('jquery-typographer');
-    }
+    Typographer.prototype.execute = function() {
+        var self = this;
 
-    function teardown() {
-        $(context).removeClass(options.contextClass);
-    }
+        $.each(self.options.modules, function(i, moduleName) {
+            if (isValidModule(moduleName)) {
+                var moduleFullName = Typographer.getModuleFullName(moduleName);
 
-    function execute() {
-        for(var prop in $.fn.typographer) {
-            if (shouldRunModule(prop)) {
-                $(context).typographer[prop].apply(context, [options[prop]]);
-            }
-        }
-    }
-
-    function shouldRunModule(moduleName) {
-        return typeof $.fn.typographer[moduleName] == 'function'
-            && $.inArray(moduleName, options.modules) != -1;
-    }
-
-    $.fn.typographer = function(method) {
-        var args = arguments;
-
-        return $(this).each(function() {
-            if (methods[method]) {
-                return methods[method].apply(this, Array.prototype.slice.call(args, 1));
-            } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, args);
+                self.$context[moduleFullName].call(
+                    self.$context,
+                    self.options[moduleName]
+                );
             } else {
-                $.error('Method ' +  method + ' does not exist on jQuery.typographer');
+                $.error('Module ' + moduleName + ' does not exist!');
             }
         });
     };
 
-    $.fn.typographer.defaults = {
-        contextClass: 'jquery-typographer',
+    Typographer.getModuleFn = function(name) {
+        var moduleFullName = Typographer.getModuleFullName(name);
+        return $.fn[moduleFullName];
+    };
+
+    Typographer.getModuleFullName = function(name) {
+        return plugin.name + '_' + name;
+    };
+
+    function isValidModule(name) {
+        var fn = Typographer.getModuleFn(name);
+        return fn != undefined && typeof fn == 'function';
+    }
+
+
+    $.fn[plugin.name] = function(options) {
+        return this.each(function () {
+            if (!$.data(this, plugin.name)) {
+                $.data(this, plugin.name, new Typographer(this, options));
+            }
+        });
+    }
+
+    $.fn[plugin.name].defaults = {
+        contextClass: 'jquery-' + plugin.name,
         modules: []
     };
-})(jQuery);
+
+})(jQuery, window, document);

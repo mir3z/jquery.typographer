@@ -3,16 +3,16 @@ $(document).ready(function() {
 
     module('typographer', {
         teardown: function() {
-            $sandbox.empty();
+            teardownSandbox($sandbox);
         }
     });
 
     test('Initialization', function() {
         ok(jQuery(), 'jQuery is loaded');
         ok(jQuery().typographer, 'typograher is loaded');
-        ok(jQuery().typographer.hyphen, 'typographer.hyphen is loaded');
-        ok(jQuery().typographer.orphan, 'typographer.orphan is loaded');
-        ok(jQuery().typographer.punctuation, 'typographer.punctuation is loaded');
+        ok(jQuery().typographer_hyphen, 'typographer.hyphen is loaded');
+        ok(jQuery().typographer_orphan, 'typographer.orphan is loaded');
+        ok(jQuery().typographer_punctuation, 'typographer.punctuation is loaded');
 
         $sandbox.typographer();
 

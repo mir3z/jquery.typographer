@@ -3,3 +3,8 @@ $.fn.normalizedHtml = function() {
         return match.toLowerCase().replace(/class=([^">]+)/, "class=\"$1\"");
     });
 };
+
+teardownSandbox = function($sandbox) {
+    $sandbox.empty();
+    $sandbox.removeData();
+};

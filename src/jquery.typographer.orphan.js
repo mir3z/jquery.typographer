@@ -21,101 +21,107 @@
  * THE SOFTWARE.
  */
 
-(function($) {
-    var context = null;
-    var options = {};
-    var methods = {
-        init: function(opts) {
-            context = context || $(this).get(0);
-            options = $.extend({}, $.fn.typographer.orphan.defaults, opts);
-            options.ignoreTags = $.map(options.ignoreTags, function(tagName) {
-                return tagName.toLowerCase();
-            });
+;(function($, window, document, undefined) {
 
-            $(context).addClass(options.contextClass);
-
-            compileRegex();
-            execute();
-        }
+    var plugin = {
+        ns: 'typographer',
+        name: 'orphan'
     };
-    var findOrphanRegex = null;
-    var orphanAtTheEndRegex = null;
-    var nbsp = '\u00A0';
+    plugin.fullName = plugin.ns + '_' + plugin.name;
 
-    function compileRegex() {
-        var forbiddenAlt = options.forbidden.join('|');
+    function Deorphanator(context, options) {
+        this.context = context;
+        this.$context = $(context);
+        this.options = $.extend({}, $.fn[plugin.fullName].defaults, options);
 
-        var findOrphanPattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
-        findOrphanRegex = new RegExp(findOrphanPattern, 'gi');
-
-        var orphanAtTheEndPattern = '\\s+(' + forbiddenAlt + ')$';
-        orphanAtTheEndRegex = new RegExp(orphanAtTheEndPattern, 'i');
+        this.init();
     }
 
-    function execute() {
+    Deorphanator.prototype.init = function() {
+        this.options.ignoreTags = Utils.normalizeTagNames(this.options.ignoreTags);
+        this.$context.addClass(this.options.contextClass);
+        compileRegex(this.options);
+
+        this.execute();
+    };
+
+    Deorphanator.prototype.execute = function() {
         var orphanAtTheEnd = false;
-        var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
+        var textNodes = Utils.getTextNodesIn(this.context, false);
+        var self = this;
+
         $.each(textNodes, function() {
-            if($.fn.typographer.common.shouldIgnore(this, context, options)) return true;
+            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
 
             var text = this.nodeValue;
-            text = $.fn.typographer.orphan.deorphanize(text);
+            text = Deorphanator.deorphanize(text, this.options);
 
             if (orphanAtTheEnd == true) {
-                text = text.replace(/^\s+/, nbsp);
+                text = text.replace(/^\s+/, Entities.nbsp);
                 orphanAtTheEnd = false;
             }
 
-            if (orphanAtTheEndRegex.test(text)) {
+            if (Deorphanator.orphanAtTheEndRegex.test(text)) {
                 orphanAtTheEnd = true;
             }
 
             this.nodeValue = text;
         });
-    }
-
-    $.fn.typographer = $.fn.typographer || function() {
-        context = $(this).get(0);
-        return $.fn.typographer;
     };
 
-    $.fn.typographer.orphan = function(method) {
-        var args = arguments;
+    Deorphanator.deorphanize = function(text, options) {
+        options = $.extend({}, $.fn[plugin.fullName].defaults, options);
 
-        return $(this).each(function() {
-            if (methods[method]) {
-                return methods[method].apply(this, Array.prototype.slice.call(args, 1));
-            } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, args);
-            } else {
-                $.error('Method ' +  method + ' does not exist on jQuery.typographer.orphan');
-            }
-        });
-    };
-
-    $.fn.typographer.orphan.deorphanize = function(text) {
-        options = $.extend({}, $.fn.typographer.orphan.defaults);
-        if (!findOrphanRegex) {
-            compileRegex();
+        if (!Deorphanator.findOrphanRegex) {
+            compileRegex(options);
         }
 
-        text = text.replace(findOrphanRegex, function($0, $1, pos) {
+        text = text.replace(Deorphanator.findOrphanRegex, function($0, $1, pos) {
             var preMatchChar = text.substring(pos - 1, pos);
 
             if (preMatchChar != ' ' && preMatchChar != '') {
                 return $0;
             } else {
-                return $1 + nbsp;
+                return $1 + Entities.nbsp;
             }
         });
 
         return text;
+    };
+
+    function compileRegex(options) {
+        var forbiddenAlt = options.forbidden.join('|');
+
+        var findOrphanPattern = '(' + forbiddenAlt + ')(?:\\n|\\s)+';
+        Deorphanator.findOrphanRegex = new RegExp(findOrphanPattern, 'gi');
+
+        var orphanAtTheEndPattern = '\\s+(' + forbiddenAlt + ')$';
+        Deorphanator.orphanAtTheEndRegex = new RegExp(orphanAtTheEndPattern, 'i');
     }
 
-    $.fn.typographer.orphan.defaults = {
-        contextClass: 'jquery-typographer-orphan',
+    $.fn[plugin.fullName] = function(options) {
+        return this.each(function () {
+            if (!$.data(this, plugin.fullName)) {
+                $.data(this, plugin.fullName, new Deorphanator(this, options));
+            }
+        });
+    }
+
+    $.fn[plugin.fullName].entities = {
+        nbsp: '\u00A0' // non-breaking space, &nbsp;
+    };
+
+    $.fn[plugin.fullName].defaults = {
+        contextClass: 'jquery-' + plugin.ns + '-' + plugin.name,
         forbidden: ['a', 'i', 'o', 'u', 'w', 'z'],
         ignoreTags: ['pre', 'code'],
-        ignoreClass: 'ignore-orphan'
+        ignoreClass: 'ignore-' + plugin.name
     };
-})(jQuery);
+
+    $[plugin.fullName] = {
+        deorphanize: Deorphanator.deorphanize
+    };
+
+    var Utils = $.typographer_common;
+    var Entities = $.fn[plugin.fullName].entities;
+})(jQuery, window, document);

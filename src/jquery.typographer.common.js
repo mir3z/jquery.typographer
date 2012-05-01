@@ -21,12 +21,24 @@
  * THE SOFTWARE.
  */
 
-(function($) {
+;(function($, window, document, undefined) {
 
-    $.fn.typographer.common = function() {};
+    var plugin = {
+        ns: 'typographer',
+        name: 'common'
+    };
+    plugin.fullName = plugin.ns + '_' + plugin.name;
 
-    $.fn.typographer.common.getTextNodesIn = function(node, includeWhitespaceNodes) {
-        var textNodes = [], onlyWhitespaces = /^\s*$/;
+    $[plugin.fullName] = $[plugin.fullName] || {};
+
+    $[plugin.fullName].normalizeTagNames = function(tags) {
+        return $.map(tags, function(tagName) {
+            return tagName.toLowerCase();
+        });
+    };
+
+    $[plugin.fullName].getTextNodesIn = function(node, includeWhitespaceNodes) {
+        var textNodes = new Array(), onlyWhitespaces = /^\s*$/;
         var TEXT_NODE = 3;
 
         function getTextNodes(node) {
@@ -45,7 +57,7 @@
         return textNodes;
     };
 
-    $.fn.typographer.common.shouldIgnore = function(node, stopNode, options) {
+    $[plugin.fullName].shouldIgnore = function(node, stopNode, options) {
         while(node != stopNode) {
             if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
                 return true;
@@ -60,5 +72,4 @@
 
         return false;
     };
-
-})(jQuery);
+})(jQuery, window, document);
