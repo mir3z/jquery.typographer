@@ -21,19 +21,89 @@
  * THE SOFTWARE.
  */
 
-(function($) {
-    var context = null;
-    var options = {};
-    var methods = {
-        init: function(opts) {
-            context = $(this).get(0);
-            options = $.extend({}, $.fn.typographer.punctuation.defaults, opts);
+;(function($, window, document, undefined) {
 
-            $(context).addClass(options.contextClass);
-            execute();
-        }
+    var plugin = {
+        ns: 'typographer',
+        name: 'punctuation'
     };
-    var ents = {
+    plugin.fullName = plugin.ns + '_' + plugin.name;
+
+    function Punctuation(context, options) {
+        this.context = context;
+        this.$context = $(context);
+        this.options = $.extend({}, $.fn[plugin.fullName].defaults, options);
+
+        this.init();
+    }
+
+    Punctuation.prototype.init = function() {
+        this.options.ignoreTags = Utils.normalizeTagNames(this.options.ignoreTags);
+        this.$context.addClass(this.options.contextClass);
+
+
+        this.execute();
+    };
+
+    Punctuation.prototype.execute = function() {
+        var textNodes = Utils.getTextNodesIn(this.context, false);
+        var self = this;
+
+        $.each(textNodes, function() {
+            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
+
+            var text = this.nodeValue;
+
+            text = Punctuation.correctQuotes(text);
+            text = Punctuation.correctEllipsis(text);
+            text = Punctuation.correctApostrophe(text);
+            text = Punctuation.correctDash(text);
+
+            this.nodeValue = text;
+        });
+    };
+
+    Punctuation.correctQuotes = function(text) {
+        // zamiana cudzysłowów prostych na drukarskie
+        text = text.replace(/"([a-ząćęłńóśżź0-9])/gi, Entities.bdquo + '$1');
+        text = text.replace(/([a-ząćęłńóśżź0-9])"/gi, '$1' + Entities.rdquo);
+
+        // korekta cudzysłowów francuskich
+        var raquoRegex = new RegExp(Entities.raquo + '([a-ząćęłńóśżź0-9])', 'gi');
+        var laquoRegex = new RegExp('([a-ząćęłńóśżź0-9])' + Entities.laquo, 'gi');
+        text = text.replace(raquoRegex, Entities.laquo + '$1');
+        text = text.replace(laquoRegex, '$1' + Entities.raquo);
+
+        return text;
+    }
+
+    Punctuation.correctEllipsis = function(text) {
+        text = text.replace(/\.\.\./gi, Entities.hellip);
+        return text;
+    }
+
+    Punctuation.correctApostrophe = function(text) {
+        text = text.replace(/'/gi, Entities.rsquo);
+        return text;
+    }
+
+    Punctuation.correctDash = function(text) {
+        text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + Entities.ndash + '$2');
+        text = text.replace(/(\d)\s+(?:\u2012|\u2013)\s+(\d)/gi, '$1' + Entities.ndash + '$2');
+        text = text.replace(/\s+-\s+/gi, ' ' + Entities.ndash + ' ');
+        text = text.replace(/([a-ząćęłńóśżź])(?:\u2012|\u2013)([a-ząćęłńóśżź])/gi, "$1-$2");
+        return text;
+    }
+
+    $.fn[plugin.fullName] = function(options) {
+        return this.each(function () {
+            if (!$.data(this, plugin.fullName)) {
+                $.data(this, plugin.fullName, new Punctuation(this, options));
+            }
+        });
+    }
+
+    $.fn[plugin.fullName].entities = {
         'bdquo' : '\u201E', // &bdquo; cudzysłów otwierający
         'rdquo' : '\u201D', // &rdquo; cudzysłów zamykający
         'laquo' : '\u00AB', // &laquo; cudzysłów otwierający francuski
@@ -44,70 +114,19 @@
         'mdash' : '\u2014'  // &ndash; pauza
     };
 
-    function execute() {
-        var textNodes = $.fn.typographer.common.getTextNodesIn(context, false);
-        $.each(textNodes, function() {
-            if($.fn.typographer.common.shouldIgnore(this, context, options)) return true;
-
-            var text = this.nodeValue;
-            text = $.fn.typographer.punctuation.correctQuotes(text);
-            text = $.fn.typographer.punctuation.correctEllipsis(text);
-            text = $.fn.typographer.punctuation.correctApostrophe(text);
-            text = $.fn.typographer.punctuation.correctDash(text);
-
-            this.nodeValue = text;
-        });
-    }
-
-    $.fn.typographer.punctuation = function(method) {
-        var args = arguments;
-
-        return $(this).each(function() {
-            if (methods[method]) {
-                return methods[method].apply(this, Array.prototype.slice.call(args, 1));
-            } else if (typeof method === 'object' || !method) {
-                return methods.init.apply(this, args);
-            } else {
-                $.error('Method ' +  method + ' does not exist on jQuery.typographer.punctuation');
-            }
-        });
-    };
-
-    $.fn.typographer.punctuation.correctQuotes = function(text) {
-        // zamiana cudzysłowów prostych na drukarskie
-        text = text.replace(/"([a-ząćęłńóśżź])/gi, ents.bdquo + '$1');
-        text = text.replace(/([a-ząćęłńóśżź])"/gi, '$1' + ents.rdquo);
-
-        // korekta cudzysłowów francuskich
-        text = text.replace(/\u00BB([a-ząćęłńóśżź])/gi, ents.laquo + '$1');
-        text = text.replace(/([a-ząćęłńóśżź])\u00AB/gi, '$1' + ents.raquo);
-
-        return text;
-    }
-
-    $.fn.typographer.punctuation.correctEllipsis = function(text) {
-        text = text.replace(/\.\.\./gi, ents.hellip);
-        return text;
-    }
-
-    $.fn.typographer.punctuation.correctApostrophe = function(text) {
-        text = text.replace(/'/gi, ents.rsquo);
-        return text;
-    }
-
-    $.fn.typographer.punctuation.correctDash = function(text) {
-        text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + ents.ndash + '$2');
-        text = text.replace(/(\d)\s+(?:\u2012|\u2013)\s+(\d)/gi, '$1' + ents.ndash + '$2');
-        text = text.replace(/\s+-\s+/gi, ' ' + ents.ndash + ' ');
-        text = text.replace(/([a-ząćęłńóśżź])(?:\u2012|\u2013)([a-ząćęłńóśżź])/gi, "$1-$2");
-        return text;
-    }
-
-    $.fn.typographer.punctuation.entities = ents;
-
-    $.fn.typographer.punctuation.defaults = {
-        contextClass: 'jquery-typographer-punctuation',
+    $.fn[plugin.fullName].defaults = {
+        contextClass: 'jquery-' + plugin.ns + '-' + plugin.name,
         ignoreTags: ['pre', 'code'],
-        ignoreClass: 'ignore-punctuation'
+        ignoreClass: 'ignore-' + plugin.name
     };
-})(jQuery);
+
+    $[plugin.fullName] = {
+        correctQuotes: Punctuation.correctQuotes,
+        correctEllipsis: Punctuation.correctEllipsis,
+        correctDash: Punctuation.correctDash,
+        correctApostrophe: Punctuation.correctApostrophe
+    };
+
+    var Utils = $.typographer_common;
+    var Entities = $.fn[plugin.fullName].entities;
+})(jQuery, window, document);

@@ -1,9 +1,9 @@
 $(document).ready(function() {
     var $sandbox = $('#sandbox');
 
-    module('typographer.punctuation', {
+    module('typographer_punctuation', {
         teardown: function() {
-            $sandbox.empty();
+            teardownSandbox($sandbox);
         }
     });
 
@@ -22,8 +22,8 @@ $(document).ready(function() {
             modules: ['punctuation']
         });
 
-        ok($.fn.typographer.punctuation.defaults, '$.fn.typographer.punctuation.defaults present');
-        ok($sandbox.hasClass($.fn.typographer.punctuation.defaults.contextClass),
+        ok($.fn.typographer_punctuation.defaults, '$.fn.typographer_punctuation.defaults present');
+        ok($sandbox.hasClass($.fn.typographer_punctuation.defaults.contextClass),
            'Context has valid class');
 
     });
@@ -55,6 +55,8 @@ $(document).ready(function() {
                 modules: ['punctuation']
             });
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 
@@ -78,6 +80,8 @@ $(document).ready(function() {
                 modules: ['punctuation']
             });
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 
@@ -101,6 +105,8 @@ $(document).ready(function() {
                 modules: ['punctuation']
             });
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 
@@ -147,6 +153,8 @@ $(document).ready(function() {
                 modules: ['punctuation']
             });
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
+
+            teardownSandbox($sandbox);
         });
     });
 });

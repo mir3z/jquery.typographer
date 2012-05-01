@@ -1,4 +1,7 @@
-$.fn.typographer.hyphen.patterns = [
+// www.tex.ac.uk/CTAN/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex
+
+$.fn.typographer_hyphen.patterns = $.fn.typographer_hyphen.patterns || {};
+$.fn.typographer_hyphen.patterns.pl = [
     '.ćć8',
     '.ćł8',
     '.ćń8',
@@ -4054,7 +4057,8 @@ $.fn.typographer.hyphen.patterns = [
     'ze4p3p'
 ];
 
-$.fn.typographer.hyphen.exceptions = {
+$.fn.typographer_hyphen.patterns.exceptions = $.fn.typographer_hyphen.patterns.exceptions || {};
+$.fn.typographer_hyphen.patterns.exceptions.pl = {
     'bezach': ['be', 'zach'],
     'bezami': ['be', 'zami'],
     'bynajmniej': ['by', 'naj', 'mniej'],
