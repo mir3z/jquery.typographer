@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  */
 
-;(function($, window, document, undefined) {
+(function($, window, document, undefined) {
+    'use strict';
 
     var plugin = {
         ns: 'typographer',
@@ -38,7 +39,7 @@
     };
 
     $[plugin.fullName].getTextNodesIn = function(node, includeWhitespaceNodes) {
-        var textNodes = new Array(), onlyWhitespaces = /^\s*$/;
+        var textNodes = [], onlyWhitespaces = /^\s*$/;
         var TEXT_NODE = 3;
 
         function getTextNodes(node) {
@@ -58,7 +59,7 @@
     };
 
     $[plugin.fullName].shouldIgnore = function(node, stopNode, options) {
-        while(node != stopNode) {
+        while (node !== stopNode) {
             if (node.tagName && $.inArray(node.tagName.toLowerCase(), options.ignoreTags) > -1) {
                 return true;
             }

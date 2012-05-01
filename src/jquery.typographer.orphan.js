@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  */
 
-;(function($, window, document, undefined) {
+(function($, window, document, undefined) {
+    'use strict';
 
     var plugin = {
         ns: 'typographer',
@@ -51,12 +52,14 @@
         var self = this;
 
         $.each(textNodes, function() {
-            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
+            if (Utils.shouldIgnore(this, self.context, self.options)) {
+                return true;
+            }
 
             var text = this.nodeValue;
             text = Deorphanator.deorphanize(text, this.options);
 
-            if (orphanAtTheEnd == true) {
+            if (orphanAtTheEnd) {
                 text = text.replace(/^\s+/, Entities.nbsp);
                 orphanAtTheEnd = false;
             }
@@ -79,7 +82,7 @@
         text = text.replace(Deorphanator.findOrphanRegex, function($0, $1, pos) {
             var preMatchChar = text.substring(pos - 1, pos);
 
-            if (preMatchChar != ' ' && preMatchChar != '') {
+            if (preMatchChar !== ' ' && preMatchChar !== '') {
                 return $0;
             } else {
                 return $1 + Entities.nbsp;
@@ -105,7 +108,7 @@
                 $.data(this, plugin.fullName, new Deorphanator(this, options));
             }
         });
-    }
+    };
 
     $.fn[plugin.fullName].entities = {
         nbsp: '\u00A0' // non-breaking space, &nbsp;

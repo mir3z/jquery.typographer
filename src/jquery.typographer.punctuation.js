@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  */
 
-;(function($, window, document, undefined) {
+(function($, window, document, undefined) {
+    'use strict';
 
     var plugin = {
         ns: 'typographer',
@@ -50,7 +51,9 @@
         var self = this;
 
         $.each(textNodes, function() {
-            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
+            if (Utils.shouldIgnore(this, self.context, self.options)) {
+                return true;
+            }
 
             var text = this.nodeValue;
 
@@ -75,17 +78,17 @@
         text = text.replace(laquoRegex, '$1' + Entities.raquo);
 
         return text;
-    }
+    };
 
     Punctuation.correctEllipsis = function(text) {
         text = text.replace(/\.\.\./gi, Entities.hellip);
         return text;
-    }
+    };
 
     Punctuation.correctApostrophe = function(text) {
         text = text.replace(/'/gi, Entities.rsquo);
         return text;
-    }
+    };
 
     Punctuation.correctDash = function(text) {
         text = text.replace(/(\d)\s*-\s*(\d)/gi, '$1' + Entities.ndash + '$2');
@@ -93,7 +96,7 @@
         text = text.replace(/\s+-\s+/gi, ' ' + Entities.ndash + ' ');
         text = text.replace(/([a-ząćęłńóśżź])(?:\u2012|\u2013)([a-ząćęłńóśżź])/gi, "$1-$2");
         return text;
-    }
+    };
 
     $.fn[plugin.fullName] = function(options) {
         return this.each(function () {
@@ -101,7 +104,7 @@
                 $.data(this, plugin.fullName, new Punctuation(this, options));
             }
         });
-    }
+    };
 
     $.fn[plugin.fullName].entities = {
         'bdquo' : '\u201E', // &bdquo; cudzysłów otwierający

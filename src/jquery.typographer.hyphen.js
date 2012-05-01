@@ -21,7 +21,8 @@
  * THE SOFTWARE.
  */
 
-;(function($, window, document, undefined) {
+(function($, window, document, undefined) {
+    'use strict';
 
     var plugin = {
         ns: 'typographer',
@@ -41,7 +42,7 @@
         this.options.ignoreTags = Utils.normalizeTagNames(this.options.ignoreTags);
         this.$context.addClass(this.options.contextClass);
 
-        Hyphenator.trie = Hyphenator.trie || new Array();
+        Hyphenator.trie = Hyphenator.trie || [];
         if (!Hyphenator.trie[this.options.lang]) {
             this.rebuildTrie(this.options.lang);
         }
@@ -54,7 +55,9 @@
         var self = this;
 
         $.each(textNodes, function() {
-            if(Utils.shouldIgnore(this, self.context, self.options)) return true;
+            if (Utils.shouldIgnore(this, self.context, self.options)) {
+                return true;
+            }
 
             var text = this.nodeValue;
             this.nodeValue = self.hyphenate(text);
@@ -71,7 +74,7 @@
 
     Hyphenator.prototype.rebuildTrie = function(lang) {
         var patterns = getPatterns(lang);
-        if (patterns !== undefined) {
+        if (patterns) {
             Hyphenator.trie[lang] = buildTrie(patterns);
         } else {
             $.error('Hyphenation patterns for language "' + lang + '" are undefined');
@@ -81,7 +84,9 @@
     Hyphenator.splitWord = function(word, options) {
         options = $.extend({}, $.fn[plugin.fullName].defaults, options);
 
-        if (word.length < options.minWordLength) return [word];
+        if (word.length < options.minWordLength) {
+            return [word];
+        }
         if ($.fn.typographer_hyphen.patterns.exceptions[options.lang][word]) {
             return $.fn.typographer_hyphen.patterns.exceptions[options.lang][word];
         }
@@ -90,16 +95,16 @@
         for (var i = 0; i <= options.minLeft; i++) {
             points[i] = 0;
         }
-        for (var i = 1, len = points.length; i <= options.minRight; i++) {
-            points[len-i] = 0;
+        for (var j = 1, len = points.length; j <= options.minRight; j++) {
+            points[len - j] = 0;
         }
 
-        var pieces = new Array();
+        var pieces = [];
         var piece = '';
         var letters = word.split('');
-        for (i = 0; i < word.length; i++) {
-            var char = letters[i];
-            var point = points[i+2];
+        for (var k = 0; k < word.length; k++) {
+            var char = letters[k];
+            var point = points[k + 2];
 
             piece += char;
             if (point % 2 == 1) {
@@ -140,7 +145,7 @@
 
             currentNode = trie;
 
-            for(var j = 0; j < letters.length; j++) {
+            for (var j = 0; j < letters.length; j++) {
                 var letter = letters.charAt(j);
 
                 var pos = currentNode[letter];
@@ -190,26 +195,28 @@
 
     function computeHyphenationPoints(trie, word) {
         var wordPattern = '.' + word + '.';
-        var len = wordPattern.length;
-        var points = new Array(len);
-        while (--len >= 0) {
-            points[len] = 0;
+        var patternLen = wordPattern.length;
+        var points = new Array(patternLen);
+        while (--patternLen >= 0) {
+            points[patternLen] = 0;
         }
 
         for (var i = 0; i < wordPattern.length; i++) {
             var node = trie;
 
             var part = wordPattern.slice(i);
-            for(var j = 0; j < part.length; j++) {
+            for (var j = 0; j < part.length; j++) {
                 var char = part.charAt(j);
 
-                if(node[char] != null) {
+                if (node[char] != null) {
                     node = node[char];
                     if (node.hasOwnProperty('$')) {
                         var nodePoints = node['$'];
                         for (var k = 0, len = points.length; k < nodePoints.length; k++) {
-                            if (i+k > len - 1) continue;
-                            points[i+k] = Math.max(points[i+k], nodePoints[k]);
+                            if (i + k > len - 1) {
+                                continue;
+                            }
+                            points[i + k] = Math.max(points[i + k], nodePoints[k]);
                         }
                     }
                 } else {
@@ -238,7 +245,7 @@
                 $.data(this, plugin.fullName, new Hyphenator(this, options));
             }
         });
-    }
+    };
 
     $.fn[plugin.fullName].entities = {
         shy: '\u00AD' // soft-hyphen, &shy;

@@ -21,7 +21,9 @@
  * THE SOFTWARE.
  */
 
-;(function($, window, document, undefined) {
+(function($, window, document, undefined) {
+    'use strict';
+
     var plugin = {
         name: 'typographer'
     };
@@ -67,9 +69,8 @@
 
     function isValidModule(name) {
         var fn = Typographer.getModuleFn(name);
-        return fn != undefined && typeof fn == 'function';
+        return fn !== undefined && typeof fn == 'function';
     }
-
 
     $.fn[plugin.name] = function(options) {
         return this.each(function () {
@@ -77,7 +78,7 @@
                 $.data(this, plugin.name, new Typographer(this, options));
             }
         });
-    }
+    };
 
     $.fn[plugin.name].defaults = {
         contextClass: 'jquery-' + plugin.name,
