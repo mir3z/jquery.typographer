@@ -1,5 +1,5 @@
 /**
- * @license jQuery Typographer
+ * jQuery Typographer
  * Copyright (C) 2011 by mirz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -103,10 +103,10 @@
         var piece = '';
         var letters = word.split('');
         for (var k = 0; k < word.length; k++) {
-            var char = letters[k];
+            var ch = letters[k];
             var point = points[k + 2];
 
-            piece += char;
+            piece += ch;
             if (point % 2 == 1) {
                 pieces.push(piece);
                 piece = '';
@@ -206,10 +206,10 @@
 
             var part = wordPattern.slice(i);
             for (var j = 0; j < part.length; j++) {
-                var char = part.charAt(j);
+                var ch = part.charAt(j);
 
-                if (node[char] != null) {
-                    node = node[char];
+                if (node[ch] != null) {
+                    node = node[ch];
                     if (node.hasOwnProperty('$')) {
                         var nodePoints = node['$'];
                         for (var k = 0, len = points.length; k < nodePoints.length; k++) {

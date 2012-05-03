@@ -1,4 +1,7 @@
-// www.tex.ac.uk/CTAN/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex
+
+/**
+ * @preserve www.tex.ac.uk/CTAN/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex
+ */
 
 $.fn.typographer_hyphen.patterns = $.fn.typographer_hyphen.patterns || {};
 $.fn.typographer_hyphen.patterns.pl = [
