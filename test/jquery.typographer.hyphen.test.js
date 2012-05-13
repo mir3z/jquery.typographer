@@ -12,9 +12,7 @@ $(document).ready(function() {
     });
 
     test('Initialization', function() {
-        $sandbox.typographer({
-            modules: ['hyphen']
-        });
+        $sandbox.typographer_hyphen();
 
         ok($.fn.typographer_hyphen.defaults, '$.fn.typographer_hyphen.defaults present');
         ok($sandbox.hasClass($.fn.typographer_hyphen.defaults.contextClass),
@@ -45,9 +43,8 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['hyphen']
-            });
+            $sandbox.typographer_hyphen();
+
             var expected = data.expected.replace(/\|/g, '\u00AD');
             var actual = $sandbox.normalizedHtml();
             equal(actual, expected, data.init);

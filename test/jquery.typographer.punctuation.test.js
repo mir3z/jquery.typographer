@@ -18,9 +18,7 @@ $(document).ready(function() {
     var mdash = '\u2014'; // '&ndash; pauza
 
     test('Initialization', function() {
-        $sandbox.typographer({
-            modules: ['punctuation']
-        });
+        $sandbox.typographer_punctuation();
 
         ok($.fn.typographer_punctuation.defaults, '$.fn.typographer_punctuation.defaults present');
         ok($sandbox.hasClass($.fn.typographer_punctuation.defaults.contextClass),
@@ -51,9 +49,8 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['punctuation']
-            });
+            $sandbox.typographer_punctuation();
+
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
 
             teardownSandbox($sandbox);
@@ -76,9 +73,8 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['punctuation']
-            });
+            $sandbox.typographer_punctuation();
+
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
 
             teardownSandbox($sandbox);
@@ -101,9 +97,8 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['punctuation']
-            });
+            $sandbox.typographer_punctuation();
+
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
 
             teardownSandbox($sandbox);
@@ -149,9 +144,8 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['punctuation']
-            });
+            $sandbox.typographer_punctuation();
+
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
 
             teardownSandbox($sandbox);

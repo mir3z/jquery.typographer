@@ -14,10 +14,12 @@ $(document).ready(function() {
         ok(jQuery().typographer_orphan, 'typographer.orphan is loaded');
         ok(jQuery().typographer_punctuation, 'typographer.punctuation is loaded');
 
-        $sandbox.typographer();
+        $sandbox.typographer({
+            modules: ['hyphen', 'orphan', 'punctuation']
+        });
 
         ok($.fn.typographer.defaults, '$.fn.typographer.defaults present');
-        equal($sandbox.attr('class'), $.fn.typographer.defaults.contextClass,
+        ok($sandbox.hasClass($.fn.typographer.defaults.contextClass),
               'Context has valid class');
     });
 });

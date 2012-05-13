@@ -8,9 +8,7 @@ $(document).ready(function() {
     });
 
     test('Initialization', function() {
-        $sandbox.typographer({
-            modules: ['orphan']
-        });
+        $sandbox.typographer_orphan();
 
         ok($.fn.typographer_orphan.defaults, '$.fn.typographer_orphan.defaults present');
         ok($sandbox.hasClass($.fn.typographer_orphan.defaults.contextClass),
@@ -57,9 +55,7 @@ $(document).ready(function() {
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
 
-            $sandbox.typographer({
-                modules: ['orphan']
-            });
+            $sandbox.typographer_orphan();
 
             var actual = $sandbox.normalizedHtml();
             equal(actual, data.expected, data.init);
@@ -85,11 +81,8 @@ $(document).ready(function() {
 
         $sandbox.text(init);
 
-        $sandbox.typographer({
-            modules: ['orphan'],
-            orphan: {
-                forbidden: forbidList
-            }
+        $sandbox.typographer_orphan({
+            forbidden: forbidList
         });
 
         equal($sandbox.html(), expected, 'Non-breaking spaces inserted correctly.');

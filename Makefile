@@ -69,7 +69,7 @@ jshint_presence:
 	|| { echo >&2 "I require ${JSHINT_BIN} but it's not installed. Aborting."; exit 1; }
 
 test:
-	${BROWSER} ${TEST_DIR}/index.html
+	${BROWSER} ${TEST_DIR}/*.html
 
 clean:
 	rm -rf ${DIST_DIR}
