@@ -27,6 +27,14 @@ $(document).ready(function() {
                 expected: 'Bia|ło|ru|ska wy|ciecz|ka kra|jo|znaw|cza'
             },
             {
+                init: 'Dzisiaj',
+                expected: 'Dzi|siaj'
+            },
+            {
+                init: 'Dzisiaj?',
+                expected: 'Dzi|siaj?'
+            },
+            {
                 init: 'Wrona gdzieniegdzie kracze i puchają puchacze',
                 expected: 'Wro|na gdzie|nie|gdzie kra|cze i pu|cha|ją pu|cha|cze'
             },

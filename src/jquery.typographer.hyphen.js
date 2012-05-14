@@ -230,7 +230,7 @@
 
     function getWordsToHyphenate(text, options) {
         var words = $.grep(
-            text.split(/\s+|[.,;:"'-()]+/),
+            text.split(/\s+|[.?!,;:"'-()]+/),
             function(e) {
                 return e.length >= options.minWordLength;
             }
