@@ -37,8 +37,16 @@ $(document).ready(function() {
                 expected: 'Oto \u201Eźdźbło\u201D trawy.'
             },
             {
+                init: 'kolegom, że "...moja to trzyma buty".',
+                expected: 'kolegom, że \u201E' + ellip + 'moja to trzyma buty\u201D.'
+            },
+            {
                 init: 'Taką "długą grę" lubię.',
                 expected: 'Taką \u201Edługą grę\u201D lubię.'
+            },
+            {
+                init: '"jakimi butami jesteś", mój wynik ',
+                expected: '\u201Ejakimi butami jesteś\u201D, mój wynik '
             },
             {
                 init: 'Lorem "ipsum »dolor« sit" amet.',
@@ -48,11 +56,8 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-
             $sandbox.typographer_punctuation();
-
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
-
             teardownSandbox($sandbox);
         });
     });
@@ -72,11 +77,8 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-
             $sandbox.typographer_punctuation();
-
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
-
             teardownSandbox($sandbox);
         });
     });
@@ -96,11 +98,8 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-
             $sandbox.typographer_punctuation();
-
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
-
             teardownSandbox($sandbox);
         });
     });
@@ -143,11 +142,8 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-
             $sandbox.typographer_punctuation();
-
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
-
             teardownSandbox($sandbox);
         });
     });

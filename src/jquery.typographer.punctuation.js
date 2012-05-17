@@ -34,7 +34,6 @@
         this.context = context;
         this.$context = $(context);
         this.options = $.extend({}, $.fn[plugin.fullName].defaults, options);
-
         this.init();
     }
 
@@ -68,8 +67,8 @@
 
     Punctuation.correctQuotes = function(text) {
         // zamiana cudzysłowów prostych na drukarskie
-        text = text.replace(/"([a-ząćęłńóśżź0-9])/gi, Entities.bdquo + '$1');
-        text = text.replace(/([a-ząćęłńóśżź0-9])"/gi, '$1' + Entities.rdquo);
+        text = text.replace(/(\s|^)"(\S)/gi, '$1' + Entities.bdquo + '$2');
+        text = text.replace(/(\S)"(\s|$|[.,?!;:])/gi, '$1' + Entities.rdquo + '$2');
 
         // korekta cudzysłowów francuskich
         var raquoRegex = new RegExp(Entities.raquo + '([a-ząćęłńóśżź0-9])', 'gi');
