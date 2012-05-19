@@ -38,7 +38,7 @@ $(document).ready(function() {
             },
             {
                 init: 'kolegom, że "...moja to trzyma buty".',
-                expected: 'kolegom, że \u201E' + ellip + 'moja to trzyma buty\u201D.'
+                expected: 'kolegom, że \u201E...moja to trzyma buty\u201D.'
             },
             {
                 init: 'Taką "długą grę" lubię.',
@@ -56,7 +56,7 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-            $sandbox.typographer_punctuation();
+            $sandbox.typographer_punctuation({'correction': ['quotes']});
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
             teardownSandbox($sandbox);
         });
@@ -77,7 +77,7 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-            $sandbox.typographer_punctuation();
+            $sandbox.typographer_punctuation({'correction': ['ellipsis']});
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
             teardownSandbox($sandbox);
         });
@@ -98,7 +98,7 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-            $sandbox.typographer_punctuation();
+            $sandbox.typographer_punctuation({'correction': ['apostrophe']});
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
             teardownSandbox($sandbox);
         });
@@ -142,7 +142,7 @@ $(document).ready(function() {
 
         $.each(testSpec, function(i, data) {
             $sandbox.get(0).innerHTML = data.init;
-            $sandbox.typographer_punctuation();
+            $sandbox.typographer_punctuation({'dash': ['dash']});
             equal($sandbox.get(0).innerHTML, data.expected, data.init);
             teardownSandbox($sandbox);
         });

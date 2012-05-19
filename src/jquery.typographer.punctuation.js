@@ -56,10 +56,21 @@
 
             var text = this.nodeValue;
 
-            text = Punctuation.correctQuotes(text);
-            text = Punctuation.correctEllipsis(text);
-            text = Punctuation.correctApostrophe(text);
-            text = Punctuation.correctDash(text);
+            if ($.inArray('quotes', self.options.correction)  > -1) {
+                text = Punctuation.correctQuotes(text);
+            }
+
+            if ($.inArray('ellipsis', self.options.correction) > -1) {
+                text = Punctuation.correctEllipsis(text);
+            }
+
+            if ($.inArray('apostrophe', self.options.correction) > -1) {
+                text = Punctuation.correctApostrophe(text);
+            }
+
+            if ($.inArray('dash', self.options.correction) > -1) {
+                text = Punctuation.correctDash(text);
+            }
 
             this.nodeValue = text;
         });
@@ -117,6 +128,7 @@
     };
 
     $.fn[plugin.fullName].defaults = {
+        correction: ['quotes', 'ellipsis', 'dash', 'apostrophe'],
         contextClass: 'jquery-' + plugin.ns + '-' + plugin.name,
         ignoreTags: ['pre', 'code'],
         ignoreClass: 'ignore-' + plugin.name
