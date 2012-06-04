@@ -1,0 +1,102 @@
+body {
+    font-size: 16px;
+    font-family: "Trebuchet MS",sans-serif;
+    color: #404040;
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper {
+    margin: 30px auto 60px;
+    width: 960px;
+}
+
+#top {
+    padding: 18px 0;
+    box-shadow: 0 0 2px #000;
+    -webkit-box-shadow: 0 0 2px #000;
+    background: #efefef; /* Old browsers */
+    background: -moz-linear-gradient(top,  #efefef 0%, #cedce7 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#efefef), color-stop(100%,#cedce7)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #efefef 0%,#cedce7 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #efefef 0%,#cedce7 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #efefef 0%,#cedce7 100%); /* IE10+ */
+    background: linear-gradient(top,  #efefef 0%,#cedce7 100%); /* W3C */
+    text-align: center;
+}
+
+#top h1 {
+    letter-spacing: 1px;
+    word-spacing: 10px;
+    margin: 5px 50px 20px;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+h1 {
+    font-family: Georgia,"DejaVu Serif",serif;
+    font-style: italic;
+}
+
+a {
+    color: #000;
+}
+
+h2 {
+    margin-bottom: 0px;
+    margin-top: 35px;
+}
+
+h4, h3 {
+    margin-left: 20px;
+}
+
+h3 {
+    margin-top: 30px
+}
+
+h4 {
+    margin-bottom: 10px;
+}
+
+p {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+div.short-info {
+    margin-bottom: 40px;
+}
+
+ul {
+    list-style-type: square;
+}
+
+table {
+    margin: 0 auto;
+    margin-left: 20px;
+    border: 1px solid #afafaf;
+    font-size: 0.9em;
+}
+
+table td, table th {
+    padding: 3px 5px;
+}
+
+table th {
+    border-bottom: 1px solid #afafaf;
+    background: #afafaf;
+}
+
+table tr {
+    background-color: #efefef;
+}
+
+pre.code {
+    background-color: #efefef;
+    -webkit-border-radius: 8px 0 8px 0;
+    -moz-border-radius: 8px 0 8px 0;
+    border-radius: 8px 0 8px 0;
+    padding: 8px;
+    margin-left: 15px;
+    font-size: 0.8em;
+}

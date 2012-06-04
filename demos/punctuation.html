@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.typographer.min.pack.js"></script>
+    <script type="text/javascript" src="../js/hyph-pl.min.js"></script>
+    <title>Interpunkcja</title>
+
+    <style type="text/css">
+        #wrapper {
+            font-family: "DejaVu Serif", "Palatino", serif;
+            text-align: center;
+            margin: 10px auto 30px;
+            width: 900px;
+        }
+        div.col {
+            width: 400px;
+            text-align: justify;
+            margin: 0 15px 15px;
+            display: inline-block;
+            color: #333;
+            vertical-align: top;
+            font-size: 10pt !important;
+            line-height: 1.3em;
+        }
+        .letters-loosely {
+            text-align: left !important;
+            letter-spacing: 10px;
+        }
+        .left {
+            border: 2px solid red;
+        }
+        .right {
+            border: 2px solid green;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+
+      <h1>Korekta cudzysłowów</h1>
+      <div class="left col">
+        Koleżanki i koledzy, realizacja wcześniej nakreślonych "zadań programowych" zmusza nas do
+        przeanalizowania dalszych kierunków rozwoju. Praktyka dnia codziennego dowodzi, że dalszy
+        rozwój różnych form działalności pociąga za sobą proces wdrażania i unowocześniania "systemu
+        &raquo;szkolenia&laquo; kadry" odpowiadającemu naszym potrzebom. Wagi i znaczenia tych "problemów" nie trzeba
+        szerzej udowadniać, ponieważ konsultacja z szerokim aktywem zabezpiecza udział szerokiej
+        grupie w kształtowaniu "systemu powszechnego uczestnictwa".
+      </div>
+
+      <div class="right col correct-me">
+        Koleżanki i koledzy, realizacja wcześniej nakreślonych "zadań programowych" zmusza nas do
+        przeanalizowania dalszych kierunków rozwoju. Praktyka dnia codziennego dowodzi, że dalszy
+        rozwój różnych form działalności pociąga za sobą proces wdrażania i unowocześniania "systemu
+        &raquo;szkolenia&laquo; kadry" odpowiadającemu naszym potrzebom. Wagi i znaczenia tych "problemów" nie trzeba
+        szerzej udowadniać, ponieważ konsultacja z szerokim aktywem zabezpiecza udział szerokiej
+        grupie w kształtowaniu "systemu powszechnego uczestnictwa".
+      </div>
+
+      <h1>Korekta wielokropka</h1>
+      <div class="left col">
+        Dawno, dawno temu...
+      </div>
+      <div class="right col correct-me">
+        Dawno, dawno temu...
+      </div>
+
+      <div class="left col letters-loosely">
+        Dawno, dawno temu...
+      </div>
+      <div class="right col letters-loosely correct-me">
+        Dawno, dawno temu...
+      </div>
+
+      <h1>Korekta apostrofu</h1>
+      <div class="left col">
+        Alfabet Morse'a
+      </div>
+      <div class="right col correct-me">
+        Alfabet Morse'a
+      </div>
+
+      <h1>Korekta myślnika</h1>
+      <div class="left col">
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24.
+      </div>
+      <div class="right col correct-me">
+        W tym miesiącu przepracujemy 20 dni - w przyszłym już 24.
+      </div>
+
+      <div class="left col">
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.
+      </div>
+      <div class="right col correct-me">
+        Wszystkie poszukiwania mogą potrwać 4 - 5 dni.
+      </div>
+
+      <div class="left col">
+        w latach 1989 - 2001
+      </div>
+      <div class="right col correct-me">
+        w latach 1989 - 2001
+      </div>
+
+      <div class="left col">
+        w latach 1989 &ndash; 2001
+      </div>
+      <div class="right col correct-me">
+        w latach 1989 &ndash; 2001
+      </div>
+
+      <div class="left col">
+        działalność PAN&ndash;u
+      </div>
+      <div class="right col correct-me">
+        działalność PAN&ndash;u
+      </div>
+
+      <div class="left col">
+        biało&ndash;czerwona
+      </div>
+      <div class="right col correct-me">
+        biało&ndash;czerwona
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $('.correct-me').typographer({
+              modules: ['punctuation']
+          });
+      });
+    </script>
+  </body>
+</html>

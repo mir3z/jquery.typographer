@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>jQuery Typographer</title>
+  </head>
+  <body>
+    <div id="top">
+      <h1>jQuery Typographer</h1>
+      <img src="divider.png" alt="---" />
+    </div>
+
+    <div id="wrapper">
+      <div class="short-info">
+        <b>Wersja:</b> 0.1<br/>
+        <b>Pobierz:</b>
+            <a href="https://github.com/mir3z/jquery.typographer/zipball/master">zip</a>
+            <a href="https://github.com/mir3z/jquery.typographer/tarball/master">tar.gz</a>
+            <br/>
+        <b>Repozytorium:</b> <a href="https://github.com/mir3z/jquery.typographer">github</a><br/>
+        <b>Bugtracker:</b> <a href="https://github.com/mir3z/jquery.typographer/issues">github</a><br/>
+        <b>Licencja:</b> <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a> <br/>
+        <b>Kontakt:</b> <a href="mailto:mirz.hq@gmail.com">mirz.hq@gmail.com</a>
+      </div>
+
+      <a name="desc"></a>
+      <h2>Opis</h2>
+      <p>
+        jQuery Typographer jest wtyczką do <a href="http://jquery.com">jQuery</a>, która umożliwia
+        automatyczną poprawę jakości typograficznej polskojęzycznych tekstów na stronach WWW.
+      </p>
+
+      <a name="examples"></a>
+      <h2>Przykłady</h2>
+      <ul>
+        <li><a href="demos/hyph-and-orphan.html">Korekta sierot oraz automatyczne dzielenie
+        wyrazów</a></li>
+        <li><a href="demos/punctuation.html">Korekta cudzysłowów, wielokropka, apostrofu,
+        myślnika</a></li>
+      </ul>
+
+      <a name="comp"></a>
+      <h2>Kompatybilność</h2>
+      <p>
+        Wtyczka została przetestowana (i działa poprawnie) na następujących przeglądarkach:
+      </p>
+      <ul>
+        <li>Mozilla Firefox 3, 3.6, 11</li>
+        <li>Internet Explorer 6 &ndash; 9</li>
+        <li>Google Chrome 18</li>
+        <li>Opera 11.62</li>
+        <li>Safari 5.1 (na WinXP)</li>
+      </ul>
+
+      <a name="deps"></a>
+      <h2>Zależności</h2>
+      <p>
+        Do prawidłowego działania wtyczka wymaga biblioteki <a href="http://jquery.com">jQuery</a> w
+        wersji co najmniej 1.3.
+      </p>
+
+      <a name="arch"></a>
+      <h2>Budowa</h2>
+      <p>
+        Wtyczka składa się z następujących modułów: <code>typographer_hyphen</code>,
+        <code>typographer_orphan</code>, <code>typographer_punctuation</code>. Odpowiedzialne są one
+        za poprawę poszczególnych aspektów typografii.
+      </p>
+
+      <p>
+        Wtyczka dystrybuowana jest w dwóch wersjach:
+      </p>
+      <ul>
+        <li><code>min</code> &ndash; każdy z modułów w oddzielnym, zminimalizowanym pliku. Szablony
+        dzielenia wyrazów w osobnym pliku.</li>
+        <li><code>pack</code> &ndash; cała wtyczka zminimalizowana w jednym pliku. Szablony
+        dzielenia wyrazów w osobnym pliku. Dodatkowa fasada ułatwiająca korzystanie z modułów.</li>
+      </ul>
+
+      <a name="usage"></a>
+      <h2>Użycie</h2>
+      <p>
+        Przed użyciem wtyczki należy załączyć plik z kodem źródłowym modułów. Jeśli planujemy
+        korzystać z modułu <code>typographer-hyphen</code> musimy również załączyć plik z szablonami
+        dzielenia wyrazów (<code>hyph-pl.min.js</code>):
+      </p>
+      <pre class="code">
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.typographer.min.pack.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;hyph-pl.min.js&quot;&gt;&lt;/script&gt;</pre>
+
+      <p>
+        Zamiast załączania całej wtyczki można załączać pliki z poszczególnymi modułami, zależnie od potrzeb:
+      </p>
+      <pre class="code">
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.typographer.orphan.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.typographer.hyphen.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;hyph-pl.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery.typographer.punctuation.min.js&quot;&gt;&lt;/script&gt;</pre>
+
+      <p>
+        Następnie możemy wywołać wtyczkę. Jeśli korzystamy z wtyczki w wersji <code>pack</code>, możemy zrobić to w następujący sposób:
+      </p>
+      <pre class="code">
+$(document).ready(function() {
+    $('#article').typographer({
+        modules: ['hyphen', 'orphan', 'punctuation'], // wywoływane moduły
+        punctuation: {                                // opcje dla modułu typographer-punctuation
+            correction: ['quotes']
+        }
+    });
+});</pre>
+      <p>
+        W <code>modules</code> podajemy tablicę modułów, które mają zostać uruchomione. Domyślnie
+        jest ona pusta. Do każdego modułu można przekazać opcje w analogiczny sposób, jak powyżej
+        zostało to zrobione dla modułu <code>typographer-punctuation</code>.
+      </p>
+
+      <p>
+        Jeśli interesuje nas tylko konkretny moduł, to możemy go również uruchomić w następujący sposób:
+      </p>
+      <pre class="code">
+$(document).ready(function() {
+    $('#article').typographer_punctuation({ /* opcje */ });
+});</pre>
+
+      <a name="modules"></a>
+      <h2>Opis modułów</h2>
+
+      <a name="hyphen"></a>
+      <h3>typographer_hyphen</h3>
+      <p>
+        Moduł odpowiedzialny jest za dzielenie wyrazów. Działa w oparciu o <a
+        href="http://www.tug.org/docs/liang/">algorytm Franka Lianga</a>, który jest używany m.in. w
+        systemie TeX. Do działania wymaga szablonów dzielenia wyrazów &ndash; dołączonych do wtyczki
+        w pliku <code>hyph-pl.min.js</code>. Szablony zostały zaczerpnięte ze
+        <a
+        href="http://www.tex.ac.uk/CTAN/language/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex">
+        źródeł systemu TeX</a>.
+      </p>
+      <p>
+        Dzielenie zrealizowane jest poprzez umieszczanie encji <a
+        href="http://en.wikipedia.org/wiki/Soft_hyphen"><code>&amp;shy;</code></a> w miejscach
+        podziału wyrazu. Encja ta jest niewidoczna w przeglądarce, jednak dzięki niej przeglądarka
+        wie, w którym miejscu można dokonać podziału wyrazu.
+      </p>
+
+      <h4>Opcje</h4>
+
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Nazwa</th>
+            <th>Domyślnie</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>contextClass</td>
+            <td><code>"jquery-typographer-hyphen"</code></td>
+            <td>Klasa nadawana elementowi HTML, na którym wtyczka została wywołana.</td>
+          </tr>
+          <tr>
+            <td>lang</td>
+            <td><code>"pl"</code></td>
+            <td>Kod języka, którego dotyczy dzielenie wyrazów. Na podstawie kodu czytane są
+            odpowiednie szablony dzielenia wyrazów.</td>
+          </tr>
+          <tr>
+            <td>minWordLength</td>
+            <td><code>3</code></td>
+            <td>Wyrazy krótsze od tej wartości nie będą dzielone.</td>
+          </tr>
+          <tr>
+            <td>minLeft</td>
+            <td><code>2</code></td>
+            <td>Minimalna liczba liter, którą może mieć pierwszy segment podzielonego wyrazu.</td>
+          </tr>
+          <tr>
+            <td>minRight</td>
+            <td><code>2</code></td>
+            <td>Minimalna liczba liter, ktorą może mieć ostatni segment podzielonego wyrazu.</td>
+          </tr>
+          <tr>
+            <td>ignoreTags</td>
+            <td><code>["pre", "code"]</code></td>
+            <td>List znaczników, które zostaną zignorowane i wewnątrz nich nie dokona się podział.</td>
+          </tr>
+          <tr>
+            <td>ignoreClass</td>
+            <td><code>"ignore-hyphen"</code></td>
+            <td>Nadanie tej klasy elementowi HTML spowoduje ignorowanie jego zawartości podczas korekty.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Metody</h4>
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Nazwa</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>$.typographer_hypher.splitWord(word)</code></td>
+            <td>Zwraca tablicę segmentów dzielonego wyrazu podanego jako parametr.</td>
+          </tr>
+          <tr>
+            <td><code>$.typographer_hypher.hyphenate(text)</code></td>
+            <td>Dzieli tekst wstawiając w odpowiednie miejsca encję <code>&amp;shy;</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <a name="orphan"></a>
+      <h3>typographer_orphan</h3>
+      <p>
+        Moduł odpowiedzialny jest za korektę <a
+        href="http://pl.wikipedia.org/wiki/Wisz%C4%85cy_sp%C3%B3jnik">wiszących spójników</a>
+        &ndash; za każdym spójnikiem wstawiana jest twarda spacja.
+      </p>
+
+      <a name="orphan-opts"></a>
+      <h4>Opcje</h4>
+
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Nazwa</th>
+            <th>Domyślnie</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>contextClass</td>
+            <td><code>"jquery-typographer-orphan"</code></td>
+            <td>Klasa nadawana elementowi HTML, na którym wtyczka została wywołana.</td>
+          </tr>
+          <tr>
+            <td>ignoreTags</td>
+            <td><code>["pre", "code"]</code></td>
+            <td>List znaczników, które zostaną zignorowane i wewnątrz nich nie dokona się korekta.</td>
+          </tr>
+          <tr>
+            <td>ignoreClass</td>
+            <td><code>"ignore-orphan"</code></td>
+            <td>Nadanie tej klasy elementowi HTML spowoduje ignorowanie jego zawartości podczas korekty.</td>
+          </tr>
+          <tr>
+            <td>forbidden</td>
+            <td><code>["a", "i", "o", "u", "w", "z"]</code></td>
+            <td>Lista spójników, po których zostanie wstawiona twarda spacja.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Metody</h4>
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Metoda</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>$.typographer_orphan.deorphanize(text, options)</code></td>
+            <td>Dokonuje korekty wiszących spójników. Do metody można przekazać listę spójników
+            (patrz <a href="#orphan-opts">opcje</a>).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <a name="punctuation"></a>
+      <h3>typographer_punctuation</h3>
+      <p>
+        Moduł jest odpowiedzialny za korektę niektórych aspektów interpukcji: cudzysłowów, wielokropków, apostrofów, myślników.
+      </p>
+
+      <h4>Opcje</h4>
+
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Nazwa</th>
+            <th>Domyślnie</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>correction</td>
+            <td><code>["quotes", "ellipsis", "dash", "apostrophe"]</code></td>
+            <td>Tablica elementów, które zostaną poddane korekcie.</td>
+          </tr>
+          <tr>
+            <td>contextClass</td>
+            <td><code>"jquery-typographer-punctuation"</code></td>
+            <td>Klasa nadawana elementowi HTML, na którym wtyczka została wywołana.</td>
+          </tr>
+          <tr>
+            <td>ignoreTags</td>
+            <td><code>["pre", "code"]</code></td>
+            <td>List znaczników, które zostaną zignorowane i wewnątrz nich nie dokona się korekta.</td>
+          </tr>
+          <tr>
+            <td>ignoreClass</td>
+            <td><code>"ignore-punctuation"</code></td>
+            <td>Nadanie tej klasy elementowi HTML spowoduje ignorowanie jego zawartości podczas korekty.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Metody</h4>
+      <table class="params">
+        <thead>
+          <tr>
+            <th>Metoda</th>
+            <th>Opis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>$.typographer_punctuation.correctQuotes(text)</code></td>
+            <td>Dokonuje korekty cudzysłowów.</td>
+          </tr>
+          <tr>
+            <td><code>$.typographer_punctuation.correctEllipsis(text)</code></td>
+            <td>Dokonuje korekty wielokropka.</td>
+          </tr>
+          <tr>
+            <td><code>$.typographer_punctuation.correctApostrophe(text)</code></td>
+            <td>Dokonuje korekty apostrofów.</td>
+          </tr>
+          <tr>
+            <td><code>$.typographer_punctuation.correctDashes(text)</code></td>
+            <td>Dokonuje korekty myślników.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Linki</h2>
+      <ul>
+        <li><a href="http://taat.pl/typografia/">Typografia internetowa</a></li>
+        <li><a href="http://webtypography.net/toc/">The Elements of Typographic Style Applied to the Web</a></li>
+      </ul>
+
+    </div>
+  </body>
+</html>
