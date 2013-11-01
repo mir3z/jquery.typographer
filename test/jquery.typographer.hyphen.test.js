@@ -45,6 +45,10 @@ $(document).ready(function() {
             {
                 init: 'Wrona <span class="ignore-hyphen">gdzieniegdzie kracze</span> i puchają puchacze',
                 expected: 'Wro|na <span class="ignore-hyphen">gdzieniegdzie kracze</span> i pu|cha|ją pu|cha|cze'
+            },
+            {
+                init: '[a] Albo tak albo nie, może mają, czy też nie?',
+                expected: '[a] Al|bo tak al|bo nie, mo|że ma|ją, czy też nie?'
             }
         ];
 

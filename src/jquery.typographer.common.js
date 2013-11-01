@@ -28,6 +28,9 @@
         ns: 'typographer',
         name: 'common'
     };
+
+    var quoteSpecialCharsRegex = /([.?*+^$[\]\\(){}|-])/g;
+
     plugin.fullName = plugin.ns + '_' + plugin.name;
 
     $[plugin.fullName] = $[plugin.fullName] || {};
@@ -73,4 +76,9 @@
 
         return false;
     };
+
+    $[plugin.fullName].quoteRegex = function(str) {
+        return (str+'').replace(quoteSpecialCharsRegex, "\\$1");
+    };
+
 })(jQuery, window, document);

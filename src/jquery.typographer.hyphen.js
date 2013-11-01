@@ -124,7 +124,7 @@
         $.each(words, function(i, word) {
             var parts = $[plugin.fullName].splitWord(word, options);
             var hyphWord = parts.join(Entities.shy);
-            var regex = new RegExp(word, 'g');
+            var regex = new RegExp(Utils.quoteRegex(word), 'g');
             text = text.replace(regex, hyphWord);
         });
 
